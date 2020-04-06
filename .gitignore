@@ -117,7 +117,7 @@ dmypy.json
 
 # turbo's ignores
 myconfig.py
+config.py
 .idea/
 data/
-static/
 temp/
