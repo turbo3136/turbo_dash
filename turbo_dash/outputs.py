@@ -82,6 +82,24 @@ class TurboOutput:
                 template=self.template,
             )
 
+        elif self.output_type == 'scatter':
+            return px.scatter(
+                data_frame=filtered_df,
+                x=self.x,
+                y=self.y,
+                color=self.color,
+                template=self.template,
+            )
+
+        elif self.output_type == 'line':
+            return px.line(
+                data_frame=filtered_df,
+                x=self.x,
+                y=self.y,
+                color=self.color,
+                template=self.template,
+            )
+
         # who are you? who who, who who
         else:
             raise ValueError(
