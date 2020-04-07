@@ -1,4 +1,3 @@
-import operator
 import plotly.express as px
 
 from app import app
