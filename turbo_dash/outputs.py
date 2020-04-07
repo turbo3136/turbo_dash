@@ -56,16 +56,9 @@ class TurboOutput:
             inp for turbo_input in self.turbo_input_list for inp in turbo_input.dash_dependencies_input_list
         ]
 
-        # yet again, this is important! We need to flatten all the input operator lists for this output.
-        # We'll use the same method of list comprehension as above.
-        self.input_operator_list = [
-            operator for turbo_input in self.turbo_input_list for operator in turbo_input.input_operator_list
-        ]
-
-        # and again, this is important! We need to flatten all the input filter column lists
-        # so we know which column to filter for each input
-        self.input_filter_column_list = [
-            col for turbo_input in self.turbo_input_list for col in turbo_input.input_filter_column_list
+        # yet again, this is important! This is the list of lambda functions we're going to filter the dataframe on
+        self.lambda_function_list = [
+            func for turbo_input in self.turbo_input_list for func in turbo_input.lambda_function_list
         ]
 
         self.html = dcc.Graph(id=self.output_component_id)  # set the html we'll use for the layout
@@ -113,29 +106,9 @@ class TurboOutput:
 
         for index, input_filter_value in enumerate(args):  # args is a list of all the filter input values
 
-            # print(args)
-            # print('index: {}, input_filter_value: {}'.format(index, input_filter_value))
-            # print('operator: {}, column: {}'.format(self.input_operator_list[index], self.input_filter_column_list[index]))
-            # print()
-
+            # if the value provided is None, we'll return the original df, otherwise we'll do the filtering
             if input_filter_value is not None:
-                filtered_df = filtered_df[  # here we start the filtering, it's the "df[" part of "df[df['col'] == val]"
-                    self.input_operator_list[index](  # now we grab our operator, something like operator.eq
-                        filtered_df[self.input_filter_column_list[index]],  # pass the operator the dataframe's values
-                        input_filter_value,  # and compare it to the filter input
-                    )
-                ]
-                # okay, so. (you know it's gonna be complicated when you start a sentence with 'okay, so')
-                # okay, so the filtering works by looking back at the operator we associated with this filter input
-                # in the TurboFilter object. For example, the DatePickerRange has two inputs
-                # one is 'start_date', the other 'end_date'. The operators are operator.ge and operator.le,
-                # respectively. Those are the mathematical operators >=, <=, and they work like: operator.ge(2, 1)
-                # returns True. So, we're filtering the df using the operator we found already
-                # (self.input_operator_list[index]) using the column name associated with this filter
-                # (self.input_filter_column_list[index]) and the input filter value as the arguments to the
-                # mathematical operator. That filters our df as we want.
-
-        # print(filtered_df.head())
+                filtered_df = self.lambda_function_list[index](filtered_df, input_filter_value)
 
         return filtered_df
 

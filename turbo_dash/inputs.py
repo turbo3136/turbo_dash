@@ -47,9 +47,8 @@ class TurboInput:
         self.input_label_class_name = input_label_class_name
 
         self.input_component_id = self.turbo_filter_object.input_component_id
-        self.input_operator_list = self.turbo_filter_object.input_operator_list
+        self.lambda_function_list = self.turbo_filter_object.lambda_function_list
         self.dash_dependencies_input_list = self.turbo_filter_object.dash_dependencies_input_list
-        self.input_filter_column_list = [self.value_column for dummy in self.input_operator_list]
 
         self.html = self.assemble_input_html()
 
@@ -77,6 +76,30 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'RangeSlider':
+            values = self.df[self.value_column].unique()
+            minimum = min(values)
+            maximum = max(values)
+            marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+
+            return html.Div(
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.RangeSlider(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min=minimum,
+                        max=maximum,
+                        value=[minimum, maximum],
+                        marks=marks,
+                        step=None,
+                    ),
+                ]
+            )
+
         # who are you? who who, who who
         else:
             raise ValueError(
@@ -90,7 +113,7 @@ class TurboFilter:
             self,
             input_component_id,
             filter_input_property_list,
-            input_operator_list,
+            lambda_function_list,
     ):
         """object that helps us organize the input values we collect and how we'll update the data using them
         Is this necessary to have a separate object? No
@@ -99,16 +122,12 @@ class TurboFilter:
         :param input_component_id: ID for the input, dash will use this in the callbacks
         :param filter_input_property_list: list of input strings that tell us what values to look for from each filter,
             e.g. ['value'] for Dropdown and RadioItems, ['start_date', 'end_date'] for DatePickerRange
-        :param input_operator_list: list of operators we want to apply to each of the inputs, respectively
-            e.g. [operator.eq] for checking equality, [operator.ge, operator.le] for [>=, <=]
+        :param lambda_function_list: list of lambda functions we want to apply to each of the inputs, respectively
+            these functions must take two arguments: a dataframe and the value to filter on
         """
         self.input_component_id = input_component_id
         self.filter_input_property_list = filter_input_property_list
-        self.input_operator_list = input_operator_list
-
-        self.filter_input_operator_dict = {
-            i: self.input_operator_list[index] for index, i in enumerate(self.filter_input_property_list)
-        }
+        self.lambda_function_list = lambda_function_list
 
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
             dash.dependencies.Input(component_id=self.input_component_id, component_property=input_property)

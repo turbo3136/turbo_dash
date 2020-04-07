@@ -17,11 +17,25 @@ list_of_inputs = [
         input_type='Dropdown',
         df=df,
         value_column='country',
-        label_column='country',
         turbo_filter_object=TurboFilter(
             input_component_id='test_input',
             filter_input_property_list=['value'],
-            input_operator_list=[operator.eq],
+            lambda_function_list=[
+                lambda dataframe, value: dataframe[dataframe['country'] == value]
+            ],
+        ),
+    ),
+    TurboInput(
+        output_id_list=['test_output'],
+        input_type='RangeSlider',
+        df=df,
+        value_column='year',
+        turbo_filter_object=TurboFilter(
+            input_component_id='test_input1',
+            filter_input_property_list=['value'],
+            lambda_function_list=[
+                lambda dataframe, value: dataframe[(dataframe['year'] >= value[0]) & (dataframe['year'] <= value[1])]
+            ],
         ),
     ),
 ]
