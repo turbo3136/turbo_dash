@@ -2,7 +2,9 @@ from app import app, app1_df
 from turbo_dash import turbo_dash
 from turbo_dash.inputs import TurboInput, TurboFilter
 from turbo_dash.outputs import TurboOutput
+from turbo_dash.dashboard_components import TurboHeader, TurboLogo, TurboLinks, TurboLink
 
+from config import LOGO_PATH
 
 # ['country', 'continent', 'year', 'lifeExp', 'pop', 'gdpPercap', 'iso_alpha', 'iso_num']
 df = app1_df
@@ -53,10 +55,39 @@ list_of_outputs = [
     )
 ]
 
+header_object = TurboHeader(
+    wrapper_class_name='header',
+    logo_object=TurboLogo(
+        logo_component_id='logo',
+        logo_class_name='logo',
+        logo_file_path=LOGO_PATH,
+        logo_href='/',
+        logo_width='120px',
+    ),
+    links_object=TurboLinks(
+        list_of_link_objects=[
+            TurboLink(
+                link_component_id='link1',
+                link_href='/app1',
+                link_class_name='header-link',
+                link_text='app1',
+            ),
+            TurboLink(
+                link_component_id='link2',
+                link_href='/app2',
+                link_class_name='header-link',
+                link_text='app2',
+            ),
+        ],
+        wrapper_class_name='header-links',
+    )
+)
+
 td = turbo_dash(
     app_to_callback=app,
     list_of_inputs=list_of_inputs,
     list_of_outputs=list_of_outputs,
+    header_object=header_object,
     layout_template='turbo',
 )
 

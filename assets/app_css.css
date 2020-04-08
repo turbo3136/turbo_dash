@@ -41,16 +41,21 @@ body {
     height: var(--header-height);
 }
 
-.header-link, .header-link-current {
+.header-link {
     font-size: 11pt;
     font-weight: bold;
     padding: 0 20px 0 20px;
     line-height: var(--header-height);  /* this makes the text centered */
 }
 
-.header-link-current {
+
+.header-link:hover {
     color: #000;
-    background-color: var(--sb-color);
+}
+
+a:link, a:visited {
+    color: #666;
+    text-decoration: none;
 }
 
 /* now for the sidebar and content areas */
