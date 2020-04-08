@@ -2,6 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from config import LOGO_PATH
+from app import wrapper_div_id
 
 
 class turbo_dash:
@@ -38,7 +39,7 @@ class turbo_dash:
         if self.layout_template is None or self.layout_template == 'default':
             # default layout, no divs or classes
             return html.Div(
-                id='page-content',
+                id=wrapper_div_id,
                 children=[
                     html.Div(
                         id='input_div',
@@ -52,7 +53,7 @@ class turbo_dash:
             )
         elif self.layout_template == 'turbo':
             return html.Div(
-                id='page-content',
+                id=wrapper_div_id,
                 children=[
                     html.Div(  # header
                         id='header_div',

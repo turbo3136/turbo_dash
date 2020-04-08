@@ -8,3 +8,6 @@ app.config.suppress_callback_exceptions = True
 import plotly.express as px
 app1_df = px.data.gapminder()
 app2_df = px.data.gapminder()
+
+# let's also set the ID of our app's main wrapper div
+wrapper_div_id = 'page-content'

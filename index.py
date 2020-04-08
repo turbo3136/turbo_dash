@@ -2,19 +2,19 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-from app import app
+from app import app, wrapper_div_id
 import app1
 import app2
 
-# this is just a loop to return the
+# this is just a loop to return the page content
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    html.Div(id=wrapper_div_id)
 ])
 
 
 @app.callback(
-    dash.dependencies.Output('page-content', 'children'),
+    dash.dependencies.Output(wrapper_div_id, 'children'),
     [dash.dependencies.Input('url', 'pathname')]
 )
 def display_page(pathname):
