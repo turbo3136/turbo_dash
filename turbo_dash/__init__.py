@@ -54,7 +54,6 @@ class turbo_dash:
         if self.layout_template is None or self.layout_template == 'default':
             # default layout, no divs or classes
             return html.Div(
-                id=wrapper_div_id,
                 children=[
                     self.header_html,
                     html.Div(
@@ -70,7 +69,6 @@ class turbo_dash:
 
         elif self.layout_template == 'turbo':
             return html.Div(
-                id=wrapper_div_id,
                 children=[
                     self.header_html,  # /header
                     html.Div(  # sidebar-and-content
@@ -92,6 +90,6 @@ class turbo_dash:
         # who are you? who who, who who
         else:
             raise ValueError(
-                """I don't know what to do with a "{}" output type. Please add it to {}."""
+                """I don't know what to do with a "{}" layout template. Please add it to {}."""
                 .format(self.layout_template, __file__)
             )
