@@ -23,6 +23,7 @@ list_of_inputs = [
                 lambda dataframe, value: dataframe[dataframe['country'] == value]
             ],
         ),
+        input_label_class_name='sidebar-label',
     ),
     TurboInput(
         output_id_list=['test_output'],
@@ -36,6 +37,7 @@ list_of_inputs = [
                 lambda dataframe, value: dataframe[(dataframe['year'] >= value[0]) & (dataframe['year'] <= value[1])]
             ],
         ),
+        input_label_class_name='sidebar-label',
     ),
 ]
 

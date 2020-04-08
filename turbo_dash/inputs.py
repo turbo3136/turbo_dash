@@ -12,6 +12,7 @@ class TurboInput:
             value_column,
             label_column=None,
             turbo_filter_object=None,
+            wrapper_class_name=None,
             input_class_name=None,
             input_label=None,
             input_label_class_name=None,
@@ -26,6 +27,7 @@ class TurboInput:
         :param label_column: optional, column in the dataframe that contains the labels, defaults to the value_column
         :param turbo_filter_object: optional, TurboFilter object that contains info about
             what input strings the filter will output and how to filter the dataframe based on those inputs
+        :param wrapper_class_name: optional, css class name for the wrapper of the filter and label
         :param input_class_name: optional, css class name for the input object
         :param input_label: optional, text label for the input object
         :param input_label_class_name: optional, css class name for the label of the input object
@@ -39,6 +41,7 @@ class TurboInput:
         else:
             self.label_column = label_column
         self.turbo_filter_object = turbo_filter_object
+        self.wrapper_class_name = wrapper_class_name
         self.input_class_name = input_class_name
         if input_label is None:
             self.input_label = self.label_column
@@ -63,6 +66,7 @@ class TurboInput:
             ]
 
             return html.Div(
+                className=self.wrapper_class_name,
                 children=[
                     html.Div(
                         className=self.input_label_class_name,
