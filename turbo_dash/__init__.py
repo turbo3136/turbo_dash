@@ -38,7 +38,7 @@ class turbo_dash:
         if self.layout_template is None or self.layout_template == 'default':
             # default layout, no divs or classes
             return html.Div(
-                id='main_div',
+                id='page-content',
                 children=[
                     html.Div(
                         id='input_div',
@@ -52,7 +52,7 @@ class turbo_dash:
             )
         elif self.layout_template == 'turbo':
             return html.Div(
-                id='main_div',
+                id='page-content',
                 children=[
                     html.Div(  # header
                         id='header_div',

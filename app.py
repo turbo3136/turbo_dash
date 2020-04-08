@@ -5,5 +5,6 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 
 # now we load all our data
-# import plotly.express as px
-# df = px.data.gapminder()
+import plotly.express as px
+app1_df = px.data.gapminder()
+app2_df = px.data.gapminder()
