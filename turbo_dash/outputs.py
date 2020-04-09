@@ -93,6 +93,15 @@ class TurboOutput:
                 template=self.template,
             )
 
+        elif self.output_type == 'violin':
+            return px.violin(
+                data_frame=filtered_df,
+                x=self.x,
+                y=self.y,
+                color=self.color,
+                points='all',
+            )
+
         # who are you? who who, who who
         else:
             raise ValueError(
