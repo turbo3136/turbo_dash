@@ -1,11 +1,15 @@
-from app import app, app2_df
+import plotly.express as px
+
+from app import app
 from turbo_dash import turbo_dash
 from turbo_dash.inputs import TurboInput, TurboFilter
 from turbo_dash.outputs import TurboOutput
 
+from config import LOGO_PATH
+
 
 # ['country', 'continent', 'year', 'lifeExp', 'pop', 'gdpPercap', 'iso_alpha', 'iso_num']
-df = app2_df
+df = px.data.gapminder()
 
 
 list_of_inputs = [
@@ -58,12 +62,12 @@ td = turbo_dash(
     list_of_inputs=list_of_inputs,
     list_of_outputs=list_of_outputs,
     layout_template='turbo',
+    turbo_header_logo_file_path=LOGO_PATH,
+    turbo_header_links_list=[
+        {'href': '/app1', 'text': 'app1'},
+        {'href': '/app2', 'text': 'app2'},
+    ],
 )
 
 layout = td.layout
 td.callbacks
-
-
-if __name__ == '__main__':
-    # app.run_server(debug=True)
-    app.run_server(debug=False)
