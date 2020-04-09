@@ -12,6 +12,7 @@ body {
     --sidebar-width: 300px;
     --sidebar-color: #fff;
     --sidebar-text-color: #444;
+    --current-link-color: #e0ecff;
 }
 
 .dashboard-wrapper {
@@ -50,7 +51,16 @@ body {
 
 .header-link-current {
     color: #000;
-    background-color: var(--sb-color);
+    background-color: var(--current-link-color);
+}
+
+.header-link:hover {
+    color: #000;
+}
+
+a:link, a:visited {
+    color: #666;
+    text-decoration: none;
 }
 
 /* now for the sidebar and content areas */
