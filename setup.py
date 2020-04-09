@@ -19,4 +19,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    install_requires=[
+        'dash>=1.8.0',
+        'dash-core-components>=1.7.0',
+        'dash-html-components>=1.0.2',
+        'plotly>=4.0.0',
+    ],
 )
