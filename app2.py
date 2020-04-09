@@ -65,7 +65,7 @@ td = turbo_dash(
     turbo_header_logo_file_path=LOGO_PATH,
     turbo_header_links_list=[
         {'href': '/app1', 'text': 'app1'},
-        {'href': '/app2', 'text': 'app2'},
+        {'href': '/app2', 'text': 'app2', 'link_class_name': 'header-link-current'},
     ],
 )
 
