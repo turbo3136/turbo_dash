@@ -71,7 +71,7 @@ a:link, a:visited {
     column-gap: 10px;
     grid-template-areas: "sidebar content";
     grid-template-columns: var(--sidebar-width) 1fr;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-height));
 }
 
 .sidebar {
