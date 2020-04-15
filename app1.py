@@ -54,7 +54,7 @@ list_of_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
-        graph_options_list=['output_type', 'y', 'color'],
+        graph_inputs_list=['output_type', 'y', 'color'],
     )
 ]
 
