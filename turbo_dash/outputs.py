@@ -14,7 +14,8 @@ class TurboOutput:
             y=None,
             color=None,
             template=None,
-            turbo_input_list=None,
+            turbo_input_list=[],
+            graph_inputs_list=[],
     ):
         """output object that will assemble the information we need
 
@@ -28,6 +29,9 @@ class TurboOutput:
         :param color: optional, plotly express color argument (column to color accordingly)
         :param template: optional, plotly express template for the output
         :param turbo_input_list: optional, list of TurboInput objects that will affect this output
+        :param graph_inputs_list: optional, list of strings corresponding to different inputs we want to apply
+            directly to the graph. These are things like 'plot_type' for choosing what plot we want to use.
+            'x' for choosing the x-axis, etc.
         """
         self.output_component_id = output_component_id
         self.output_component_property = output_component_property
@@ -38,6 +42,7 @@ class TurboOutput:
         self.color = color
         self.template = template
         self.turbo_input_list = turbo_input_list
+        self.graph_inputs_list = graph_inputs_list
 
         # this is important! This is the dash output that the callback will update
         self.dash_dependencies_output = dash.dependencies.Output(
