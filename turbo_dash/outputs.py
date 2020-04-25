@@ -2,8 +2,12 @@ import plotly.express as px
 import dash
 import dash_core_components as dcc
 
+from collections import OrderedDict
+from .inputs import TurboInput, TurboFilter
+
 
 class TurboOutput:
+
     def __init__(
             self,
             output_component_id,
@@ -43,6 +47,9 @@ class TurboOutput:
         self.template = template
         self.turbo_input_list = turbo_input_list
         self.graph_inputs_list = graph_inputs_list
+
+        # object to look up information about the charts we're using
+        self._plotly_express_lookup_object = PlotlyExpressLookup()
 
         # this is important! This is the dash output that the callback will update
         self.dash_dependencies_output = dash.dependencies.Output(
@@ -135,3 +142,107 @@ class TurboOutput:
             """put everything together into one function where we filter and assemble the output"""
             filtered_df = self.filter_dataframe(input_values)
             return self.assemble_output_object(filtered_df=filtered_df)
+
+
+class PlotlyExpressLookup:
+
+    def __init__(self):
+        """look up information about plotly express objects"""
+
+        self._chart_lookup_dict = OrderedDict([
+            (
+                'scatter', {
+                    'object': px.scatter,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'size', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'line', {
+                    'object': px.line,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'area', {
+                    'object': px.area,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'bar', {
+                    'object': px.bar,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'histogram', {
+                    'object': px.histogram,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'violin', {
+                    'object': px.violin,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'scatter3d', {
+                    'object': px.scatter_3d,
+                    'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
+                }
+            ),
+        ])
+
+        # not supported yet
+        # density_contour
+        # density_heatmap
+        # box
+        # strip
+        # line_3d
+        # scatter_ternary
+        # line_ternary
+        # scatter_polar
+        # line_polar
+        # bar_polar
+        # choropleth
+        # scatter_geo
+        # line_geo
+        # scatter_mapbox
+        # choropleth_mapbox
+        # density_mapbox
+        # line_mapbox
+        # scatter_matrix
+        # parallel_coordinates
+        # parallel_categories
+        # pie
+        # sunburst
+        # treemap
+        # funnel
+        # funnel_area
+
+        self._list_of_chart_strings = list(self._chart_lookup_dict.keys())
+
+    def _get_chart_dict(self, chart_string):
+        """return the dictionary for the specified plotly express chart"""
+        ret_dict = self._chart_lookup_dict.get(chart_string)
+
+        if ret_dict:
+            return ret_dict
+        else:
+            raise ValueError(
+                """I don't have a plotly object for "{}" output type. You might need to add it to {}."""
+                .format(chart_string, __file__)
+            )
+
+    def _get_chart_dict_value(self, chart_string, key):
+        """return a key from the dict corresponding to the chart_string"""
+        return self._get_chart_dict(chart_string).get(key)
+
+    def _get_chart_object(self, chart_string):
+        """return the plotly express object corresponding to the chart_string"""
+        return self._get_chart_dict_value(chart_string, key='object')
+
+    def _get_chart_inputs(self, chart_string):
+        """return the plotly express input arguments corresponding to the chart_string"""
+        return self._get_chart_dict_value(chart_string, key='inputs')
