@@ -2,8 +2,7 @@ import plotly.express as px
 import dash
 import dash_core_components as dcc
 
-from collections import OrderedDict
-from .inputs import TurboInput, TurboFilter
+from .inputs import TurboInput
 
 
 class TurboOutput:
@@ -12,44 +11,62 @@ class TurboOutput:
             self,
             output_component_id,
             output_component_property,
-            output_type,
+            output_type_string,
             df=None,
             x=None,
             y=None,
+            z=None,
             color=None,
+            size=None,
+            hover_data=None,
             template=None,
             turbo_input_list=[],
-            graph_inputs_list=[],
+            graph_input_list=[],
     ):
         """output object that will assemble the information we need
 
         :param output_component_id: component ID for the output, dash will use this in the callbacks
         :param output_component_property: property we want to update for the output, dash will use this in the callbacks
-        :param output_type: string for the type of output we want to use,
+        :param output_type_string: string for the type of output we want to use,
             you might have to add functionality for your output if you're using a new one
         :param df: optional, dataframe we'll use to gather the output data
         :param x: optional, column we'll use for the x axis data
         :param y: optional, column we'll use for the y axis data
+        :param z: optional, column we'll use for the z axis
         :param color: optional, plotly express color argument (column to color accordingly)
+        :param size: optional, column we'll use for size
+        :param hover_data: optional, column we'll use for the hover_data axis
         :param template: optional, plotly express template for the output
         :param turbo_input_list: optional, list of TurboInput objects that will affect this output
-        :param graph_inputs_list: optional, list of strings corresponding to different inputs we want to apply
-            directly to the graph. These are things like 'plot_type' for choosing what plot we want to use.
+        :param graph_input_list: optional, list of strings corresponding to different inputs we want to apply
+            directly to the graph. These are things like 'graph_type' for choosing what plot we want to use.
             'x' for choosing the x-axis, etc.
         """
         self.output_component_id = output_component_id
         self.output_component_property = output_component_property
-        self.output_type = output_type
+        self.output_type_string = output_type_string
         self.df = df
         self.x = x
         self.y = y
+        self.z = z
         self.color = color
+        self.size = size
+        self.hover_data = hover_data
         self.template = template
         self.turbo_input_list = turbo_input_list
-        self.graph_inputs_list = graph_inputs_list
+        self.graph_input_list = graph_input_list
 
-        # object to look up information about the charts we're using
-        self._plotly_express_lookup_object = PlotlyExpressLookup()
+        # create the turbo input objects from the graph_input_list strings
+        self.graph_turbo_input_list = self._create_graph_turbo_input_list()
+
+        # shove the two input lists together because all the values will apply to this output
+        self.complete_turbo_input_list = self.turbo_input_list + self.graph_turbo_input_list
+
+        # then we log off some important indices that we'll use to parse arguments in the callback
+        self.turbo_input_list_start_index = self._get_input_list_index_dict()['turbo_start']
+        self.turbo_input_list_stop_index = self._get_input_list_index_dict()['turbo_stop']
+        self.graph_input_list_start_index = self._get_input_list_index_dict()['graph_start']
+        self.graph_input_list_stop_index = self._get_input_list_index_dict()['graph_stop']
 
         # this is important! This is the dash output that the callback will update
         self.dash_dependencies_output = dash.dependencies.Output(
@@ -75,39 +92,84 @@ class TurboOutput:
 
         self.html = dcc.Graph(id=self.output_component_id)  # set the html we'll use for the layout
 
-    def assemble_output_object(self, filtered_df):
+    def _get_input_list_index_dict(self):
+        """grab some important indices we'll use in the callback"""
+        ret = {}
+
+        if self.turbo_input_list:  # if we provided turbo inputs, log the indices
+            ret['turbo_start'] = 0
+            ret['turbo_stop'] = ret['turbo_start'] + len(self.turbo_input_list) - 1
+
+            if self.graph_input_list:  # if we provided graph inputs, log the indices
+                ret['graph_start'] = ret['turbo_stop'] + 1
+                ret['graph_stop'] = ret['graph_start'] + len(self.graph_input_list) - 1
+            else:
+                ret['graph_start'] = None
+                ret['graph_stop'] = None
+
+        else:  # if we didn't provide turbo inputs, set the indices to None
+            ret['turbo_start'] = None
+            ret['turbo_stop'] = None
+
+            if self.graph_input_list:  # if we provided graph inputs, log the indices
+                ret['graph_start'] = 0
+                ret['graph_stop'] = ret['graph_start'] + len(self.graph_input_list) - 1
+            else:
+                ret['graph_start'] = None
+                ret['graph_stop'] = None
+
+        return ret
+
+    def _create_graph_turbo_input_list(self):
+        """assemble the TurboInput objects based on the strings in graph_input_list"""
+        return [self._create_graph_turbo_input(graph_input) for graph_input in self.graph_input_list]
+
+    def _create_graph_turbo_input(self, graph_input):
+        """create the TurboInput object for a graph input based on the provided string"""
+        return None  # TurboInput()
+
+    def assemble_output_object(
+            self,
+            data_frame,
+            output_type_string=None,
+            x=None,
+            y=None,
+            z=None,
+            color=None,
+            template=None,
+    ):
         """assemble the output object we want"""
 
-        if self.output_type == 'bar':
+        if self.output_type_string == 'bar':
             return px.bar(
-                data_frame=filtered_df,
+                data_frame=data_frame,
                 x=self.x,
                 y=self.y,
                 color=self.color,
                 template=self.template,
             )
 
-        elif self.output_type == 'scatter':
+        elif self.output_type_string == 'scatter':
             return px.scatter(
-                data_frame=filtered_df,
+                data_frame=data_frame,
                 x=self.x,
                 y=self.y,
                 color=self.color,
                 template=self.template,
             )
 
-        elif self.output_type == 'line':
+        elif self.output_type_string == 'line':
             return px.line(
-                data_frame=filtered_df,
+                data_frame=data_frame,
                 x=self.x,
                 y=self.y,
                 color=self.color,
                 template=self.template,
             )
 
-        elif self.output_type == 'violin':
+        elif self.output_type_string == 'violin':
             return px.violin(
-                data_frame=filtered_df,
+                data_frame=data_frame,
                 x=self.x,
                 y=self.y,
                 color=self.color,
@@ -118,7 +180,7 @@ class TurboOutput:
         else:
             raise ValueError(
                 """I don't know what to do with a "{}" output type. Please add it to {}."""
-                .format(self.output_type, __file__)
+                .format(self.output_type_string, __file__)
             )
 
     def filter_dataframe(self, args):
@@ -141,108 +203,4 @@ class TurboOutput:
         def filter_and_assemble_output(*input_values):
             """put everything together into one function where we filter and assemble the output"""
             filtered_df = self.filter_dataframe(input_values)
-            return self.assemble_output_object(filtered_df=filtered_df)
-
-
-class PlotlyExpressLookup:
-
-    def __init__(self):
-        """look up information about plotly express objects"""
-
-        self._chart_lookup_dict = OrderedDict([
-            (
-                'scatter', {
-                    'object': px.scatter,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'size', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'line', {
-                    'object': px.line,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'area', {
-                    'object': px.area,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'bar', {
-                    'object': px.bar,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'histogram', {
-                    'object': px.histogram,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'violin', {
-                    'object': px.violin,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'scatter3d', {
-                    'object': px.scatter_3d,
-                    'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
-                }
-            ),
-        ])
-
-        # not supported yet
-        # density_contour
-        # density_heatmap
-        # box
-        # strip
-        # line_3d
-        # scatter_ternary
-        # line_ternary
-        # scatter_polar
-        # line_polar
-        # bar_polar
-        # choropleth
-        # scatter_geo
-        # line_geo
-        # scatter_mapbox
-        # choropleth_mapbox
-        # density_mapbox
-        # line_mapbox
-        # scatter_matrix
-        # parallel_coordinates
-        # parallel_categories
-        # pie
-        # sunburst
-        # treemap
-        # funnel
-        # funnel_area
-
-        self._list_of_chart_strings = list(self._chart_lookup_dict.keys())
-
-    def _get_chart_dict(self, chart_string):
-        """return the dictionary for the specified plotly express chart"""
-        ret_dict = self._chart_lookup_dict.get(chart_string)
-
-        if ret_dict:
-            return ret_dict
-        else:
-            raise ValueError(
-                """I don't have a plotly object for "{}" output type. You might need to add it to {}."""
-                .format(chart_string, __file__)
-            )
-
-    def _get_chart_dict_value(self, chart_string, key):
-        """return a key from the dict corresponding to the chart_string"""
-        return self._get_chart_dict(chart_string).get(key)
-
-    def _get_chart_object(self, chart_string):
-        """return the plotly express object corresponding to the chart_string"""
-        return self._get_chart_dict_value(chart_string, key='object')
-
-    def _get_chart_inputs(self, chart_string):
-        """return the plotly express input arguments corresponding to the chart_string"""
-        return self._get_chart_dict_value(chart_string, key='inputs')
+            return self.assemble_output_object(data_frame=filtered_df)

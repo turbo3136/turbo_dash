@@ -1,3 +1,5 @@
+from collections import OrderedDict
+import plotly.express as px
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -11,7 +13,9 @@ class TurboInput:
             df,
             value_column,
             label_column=None,
-            turbo_filter_object=None,
+            input_component_id=None,
+            filter_input_property_list=None,
+            lambda_function_list=None,
             wrapper_class_name=None,
             input_class_name=None,
             input_label=None,
@@ -25,8 +29,11 @@ class TurboInput:
         :param df: dataframe we'll use to gather the filter info
         :param value_column: column in the dataframe that contains the values
         :param label_column: optional, column in the dataframe that contains the labels, defaults to the value_column
-        :param turbo_filter_object: optional, TurboFilter object that contains info about
-            what input strings the filter will output and how to filter the dataframe based on those inputs
+        :param input_component_id: ID for the input, dash will use this in the callbacks
+        :param filter_input_property_list: list of input strings that tell us what values to look for from each filter,
+            e.g. ['value'] for Dropdown and RadioItems, ['start_date', 'end_date'] for DatePickerRange
+        :param lambda_function_list: list of lambda functions we want to apply to each of the inputs, respectively
+            these functions must take two arguments: a dataframe and the value to filter on
         :param wrapper_class_name: optional, css class name for the wrapper of the filter and label
         :param input_class_name: optional, css class name for the input object
         :param input_label: optional, text label for the input object
@@ -40,7 +47,9 @@ class TurboInput:
             self.label_column = value_column
         else:
             self.label_column = label_column
-        self.turbo_filter_object = turbo_filter_object
+        self.input_component_id = input_component_id
+        self.filter_input_property_list = filter_input_property_list
+        self.lambda_function_list = lambda_function_list
         self.wrapper_class_name = wrapper_class_name
         self.input_class_name = input_class_name
         if input_label is None:
@@ -49,9 +58,14 @@ class TurboInput:
             self.input_label = input_label
         self.input_label_class_name = input_label_class_name
 
-        self.input_component_id = self.turbo_filter_object.input_component_id
-        self.lambda_function_list = self.turbo_filter_object.lambda_function_list
-        self.dash_dependencies_input_list = self.turbo_filter_object.dash_dependencies_input_list
+        # assemble the dash dependencies input list, this is an important part
+        self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
+            dash.dependencies.Input(component_id=self.input_component_id, component_property=input_property)
+            for input_property in self.filter_input_property_list
+        ]
+
+        # object to look up information about the charts we're using
+        self._plotly_express_lookup_object = PlotlyExpressLookup()
 
         self.html = self.assemble_input_html()
 
@@ -104,6 +118,24 @@ class TurboInput:
                 ]
             )
 
+        """
+        ## now we handle graph_input input types, i.e. inputs that directly affect the graph like the y axis
+        """
+        if self.input_type == 'graph_type':
+            return html.Div(
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Dropdown(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=self._plotly_express_lookup_object.list_of_chart_strings,
+                    ),
+                ]
+            )
+
         # who are you? who who, who who
         else:
             raise ValueError(
@@ -112,28 +144,105 @@ class TurboInput:
             )
 
 
-class TurboFilter:
-    def __init__(
-            self,
-            input_component_id,
-            filter_input_property_list,
-            lambda_function_list,
-    ):
-        """object that helps us organize the input values we collect and how we'll update the data using them
-        Is this necessary to have a separate object? No
-        But it does help us organize everything because this is an important aspect of dash
+class PlotlyExpressLookup:
 
-        :param input_component_id: ID for the input, dash will use this in the callbacks
-        :param filter_input_property_list: list of input strings that tell us what values to look for from each filter,
-            e.g. ['value'] for Dropdown and RadioItems, ['start_date', 'end_date'] for DatePickerRange
-        :param lambda_function_list: list of lambda functions we want to apply to each of the inputs, respectively
-            these functions must take two arguments: a dataframe and the value to filter on
-        """
-        self.input_component_id = input_component_id
-        self.filter_input_property_list = filter_input_property_list
-        self.lambda_function_list = lambda_function_list
+    def __init__(self):
+        """look up information about plotly express objects"""
 
-        self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
-            dash.dependencies.Input(component_id=self.input_component_id, component_property=input_property)
-            for input_property in self.filter_input_property_list
-        ]
+        self._chart_lookup_dict = OrderedDict([
+            (
+                'scatter', {
+                    'object': px.scatter,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'size', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'line', {
+                    'object': px.line,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'area', {
+                    'object': px.area,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'bar', {
+                    'object': px.bar,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'histogram', {
+                    'object': px.histogram,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'violin', {
+                    'object': px.violin,
+                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'scatter3d', {
+                    'object': px.scatter_3d,
+                    'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
+                }
+            ),
+        ])
+
+        # not supported yet
+        # density_contour
+        # density_heatmap
+        # box
+        # strip
+        # line_3d
+        # scatter_ternary
+        # line_ternary
+        # scatter_polar
+        # line_polar
+        # bar_polar
+        # choropleth
+        # scatter_geo
+        # line_geo
+        # scatter_mapbox
+        # choropleth_mapbox
+        # density_mapbox
+        # line_mapbox
+        # scatter_matrix
+        # parallel_coordinates
+        # parallel_categories
+        # pie
+        # sunburst
+        # treemap
+        # funnel
+        # funnel_area
+
+        self.list_of_chart_strings = list(self._chart_lookup_dict.keys())
+
+    def _get_chart_dict(self, chart_string):
+        """return the dictionary for the specified plotly express chart"""
+        ret_dict = self._chart_lookup_dict.get(chart_string)
+
+        if ret_dict:
+            return ret_dict
+        else:
+            raise ValueError(
+                """I don't have a plotly object for "{}" output type. You might need to add it to {}."""
+                .format(chart_string, __file__)
+            )
+
+    def _get_chart_dict_value(self, chart_string, key):
+        """return a key from the dict corresponding to the chart_string"""
+        return self._get_chart_dict(chart_string).get(key)
+
+    def _get_chart_object(self, chart_string):
+        """return the plotly express object corresponding to the chart_string"""
+        return self._get_chart_dict_value(chart_string, key='object')
+
+    def _get_chart_inputs(self, chart_string):
+        """return the plotly express input arguments corresponding to the chart_string"""
+        return self._get_chart_dict_value(chart_string, key='inputs')

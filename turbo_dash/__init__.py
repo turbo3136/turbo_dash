@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from turbo_dash.dashboard_components import TurboHeader, TurboLogo, TurboLinks, TurboLink
-from turbo_dash.inputs import TurboInput, TurboFilter
+from turbo_dash.inputs import TurboInput
 from turbo_dash.outputs import TurboOutput
 
 
