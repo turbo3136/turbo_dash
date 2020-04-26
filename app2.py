@@ -43,7 +43,7 @@ list_of_outputs = [
     TurboOutput(
         output_component_id='app2_test_output',
         output_component_property='figure',
-        output_type_string='line',
+        output_type='line',
         df=df,
         x='year',
         y='lifeExp',

@@ -1,5 +1,3 @@
-from collections import OrderedDict
-import plotly.express as px
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -20,6 +18,8 @@ class TurboInput:
             input_class_name=None,
             input_label=None,
             input_label_class_name=None,
+            plotly_express_lookup_object=None,
+            default_value=None,
     ):
         """input object that will assemble the information we need
 
@@ -38,6 +38,8 @@ class TurboInput:
         :param input_class_name: optional, css class name for the input object
         :param input_label: optional, text label for the input object
         :param input_label_class_name: optional, css class name for the label of the input object
+        :param plotly_express_lookup_object: optional, object to look up information about plotly express objects
+        :param default_value: optional, default value to initialize the filter with
         """
         self.output_id_list = output_id_list
         self.input_type = input_type
@@ -58,14 +60,16 @@ class TurboInput:
             self.input_label = input_label
         self.input_label_class_name = input_label_class_name
 
+        # object to look up information about the charts we're using
+        self.plotly_express_lookup_object = plotly_express_lookup_object
+
+        self.default_value = default_value
+
         # assemble the dash dependencies input list, this is an important part
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
             dash.dependencies.Input(component_id=self.input_component_id, component_property=input_property)
             for input_property in self.filter_input_property_list
         ]
-
-        # object to look up information about the charts we're using
-        self._plotly_express_lookup_object = PlotlyExpressLookup()
 
         self.html = self.assemble_input_html()
 
@@ -90,6 +94,7 @@ class TurboInput:
                         id=self.input_component_id,
                         className=self.input_class_name,
                         options=filter_options,
+                        value=self.default_value,
                     ),
                 ]
             )
@@ -121,7 +126,9 @@ class TurboInput:
         """
         ## now we handle graph_input input types, i.e. inputs that directly affect the graph like the y axis
         """
-        if self.input_type == 'graph_type':
+        if self.input_type == 'output_type':
+            filter_options = [{'label': e, 'value': e} for e in self.plotly_express_lookup_object.list_of_chart_strings]
+
             return html.Div(
                 children=[
                     html.Div(
@@ -131,7 +138,26 @@ class TurboInput:
                     dcc.Dropdown(
                         id=self.input_component_id,
                         className=self.input_class_name,
-                        options=self._plotly_express_lookup_object.list_of_chart_strings,
+                        options=filter_options,
+                        value=self.default_value
+                    ),
+                ]
+            )
+
+        if self.input_type == 'x':
+            filter_options = [{'label': col, 'value': col} for col in self.df.columns.values]
+
+            return html.Div(
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Dropdown(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=filter_options,
+                        value=self.default_value
                     ),
                 ]
             )
@@ -142,107 +168,3 @@ class TurboInput:
                 """I don't know what to do with a "{}" input type. Please add it to {}."""
                 .format(self.input_type, __file__)
             )
-
-
-class PlotlyExpressLookup:
-
-    def __init__(self):
-        """look up information about plotly express objects"""
-
-        self._chart_lookup_dict = OrderedDict([
-            (
-                'scatter', {
-                    'object': px.scatter,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'size', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'line', {
-                    'object': px.line,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'area', {
-                    'object': px.area,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'bar', {
-                    'object': px.bar,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'histogram', {
-                    'object': px.histogram,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'violin', {
-                    'object': px.violin,
-                    'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-                }
-            ),
-            (
-                'scatter3d', {
-                    'object': px.scatter_3d,
-                    'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
-                }
-            ),
-        ])
-
-        # not supported yet
-        # density_contour
-        # density_heatmap
-        # box
-        # strip
-        # line_3d
-        # scatter_ternary
-        # line_ternary
-        # scatter_polar
-        # line_polar
-        # bar_polar
-        # choropleth
-        # scatter_geo
-        # line_geo
-        # scatter_mapbox
-        # choropleth_mapbox
-        # density_mapbox
-        # line_mapbox
-        # scatter_matrix
-        # parallel_coordinates
-        # parallel_categories
-        # pie
-        # sunburst
-        # treemap
-        # funnel
-        # funnel_area
-
-        self.list_of_chart_strings = list(self._chart_lookup_dict.keys())
-
-    def _get_chart_dict(self, chart_string):
-        """return the dictionary for the specified plotly express chart"""
-        ret_dict = self._chart_lookup_dict.get(chart_string)
-
-        if ret_dict:
-            return ret_dict
-        else:
-            raise ValueError(
-                """I don't have a plotly object for "{}" output type. You might need to add it to {}."""
-                .format(chart_string, __file__)
-            )
-
-    def _get_chart_dict_value(self, chart_string, key):
-        """return a key from the dict corresponding to the chart_string"""
-        return self._get_chart_dict(chart_string).get(key)
-
-    def _get_chart_object(self, chart_string):
-        """return the plotly express object corresponding to the chart_string"""
-        return self._get_chart_dict_value(chart_string, key='object')
-
-    def _get_chart_inputs(self, chart_string):
-        """return the plotly express input arguments corresponding to the chart_string"""
-        return self._get_chart_dict_value(chart_string, key='inputs')

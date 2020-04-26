@@ -43,14 +43,14 @@ list_of_outputs = [
     TurboOutput(
         output_component_id='test_output',
         output_component_property='figure',
-        output_type_string='bar',
+        output_type='bar',
         df=df,
         x='year',
         y='pop',
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
-        # graph_input_list=['output_type', 'y', 'color'],
+        graph_input_list=['output_type'],
     )
 ]
 
