@@ -126,7 +126,14 @@ class TurboOutput:
 
     def _create_graph_turbo_input(self, graph_input):
         """create the TurboInput object for a graph input based on the provided string"""
-        return None  # TurboInput()
+        return TurboInput(
+            output_id_list=[self.output_component_id],
+            input_type=graph_input,
+            df=self.df,
+            value_column=graph_input,
+            input_component_id='asdflkjasdlkj',
+            filter_input_property_list=['value'],
+        )
 
     def assemble_output_object(
             self,
@@ -203,4 +210,7 @@ class TurboOutput:
         def filter_and_assemble_output(*input_values):
             """put everything together into one function where we filter and assemble the output"""
             filtered_df = self.filter_dataframe(input_values)
+
+            # TODO: use indices from above and only use the turbo input values to filter, then the graph input values to update the graph in assemble_output_object
+
             return self.assemble_output_object(data_frame=filtered_df)
