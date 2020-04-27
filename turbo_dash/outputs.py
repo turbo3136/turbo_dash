@@ -1,3 +1,5 @@
+import random
+import string
 from collections import OrderedDict
 import plotly.express as px
 import dash
@@ -42,7 +44,7 @@ class TurboOutput:
         :param template: optional, plotly express template for the output
         :param turbo_input_list: optional, list of TurboInput objects that will affect this output
         :param graph_input_list: optional, list of strings corresponding to different inputs we want to apply
-            directly to the graph. These are things like 'graph_type' for choosing what plot we want to use.
+            directly to the graph. These are things like 'output_type' for choosing what plot we want to use.
             'x' for choosing the x-axis, etc.
         :param wrapper_class_name: optional, css class name to use for the wrapper around the output
         """
@@ -154,7 +156,7 @@ class TurboOutput:
 
     def _create_graph_turbo_input_html_list(self):
         """grab the turbo input list and create a list of the html for each input"""
-        return [turbo_input.html for turbo_input in self._create_graph_turbo_input_list()]
+        return [turbo_input.html for turbo_input in self.graph_turbo_input_list]
 
     def _create_graph_turbo_input_list(self):
         """assemble the TurboInput objects based on the strings in graph_input_list"""
@@ -162,15 +164,19 @@ class TurboOutput:
 
     def _create_graph_turbo_input(self, graph_input):
         """create the TurboInput object for a graph input based on the provided string"""
+        # first, generate a random ID we'll use for this input
+        random_input_component_id = ''.join([random.choice(string.ascii_lowercase + string.digits) for n in range(32)])
+
         return TurboInput(
             output_id_list=[self.output_component_id],
             input_type=graph_input,
             df=self.df,
             value_column=graph_input,
-            input_component_id='asdflkjasdlkj',
+            input_component_id=random_input_component_id,
             filter_input_property_list=['value'],
             plotly_express_lookup_object=self._plotly_express_lookup_object,
             default_value=self.default_kwargs.get(graph_input),
+            wrapper_class_name='graph-input',
         )
 
     def _assemble_kwargs_dict(self, graph_input_args, default_data_frame, default_kwargs):
@@ -215,49 +221,6 @@ class TurboOutput:
         return self._plotly_express_lookup_object.get_chart_object(chart_string=output_type)(
             **assembled_and_popped_kwargs  # here, we're filling in the arguments
         )
-
-        # if output_type_string == 'bar':
-        #     return px.bar(
-        #         data_frame=data_frame,
-        #         x=self.x,
-        #         y=self.y,
-        #         color=self.color,
-        #         template=self.template,
-        #     )
-        #
-        # elif self.output_type_string == 'scatter':
-        #     return px.scatter(
-        #         data_frame=data_frame,
-        #         x=self.x,
-        #         y=self.y,
-        #         color=self.color,
-        #         template=self.template,
-        #     )
-        #
-        # elif self.output_type_string == 'line':
-        #     return px.line(
-        #         data_frame=data_frame,
-        #         x=self.x,
-        #         y=self.y,
-        #         color=self.color,
-        #         template=self.template,
-        #     )
-        #
-        # elif self.output_type_string == 'violin':
-        #     return px.violin(
-        #         data_frame=data_frame,
-        #         x=self.x,
-        #         y=self.y,
-        #         color=self.color,
-        #         points='all',
-        #     )
-        #
-        # # who are you? who who, who who
-        # else:
-        #     raise ValueError(
-        #         """I don't know what to do with a "{}" output type. Please add it to {}."""
-        #         .format(self.output_type_string, __file__)
-        #     )
 
     def filter_dataframe(self, args):
         """filter the dataframe based on the input values, columns, and operators provided"""

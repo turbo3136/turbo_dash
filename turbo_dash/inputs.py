@@ -106,6 +106,7 @@ class TurboInput:
             marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
 
             return html.Div(
+                className=self.wrapper_class_name,
                 children=[
                     html.Div(
                         className=self.input_label_class_name,
@@ -130,6 +131,7 @@ class TurboInput:
             filter_options = [{'label': e, 'value': e} for e in self.plotly_express_lookup_object.list_of_chart_strings]
 
             return html.Div(
+                className=self.wrapper_class_name,
                 children=[
                     html.Div(
                         className=self.input_label_class_name,
@@ -144,10 +146,11 @@ class TurboInput:
                 ]
             )
 
-        if self.input_type == 'x':
+        if self.input_type in ('x', 'y', 'z', 'color', 'size', 'hover_data'):
             filter_options = [{'label': col, 'value': col} for col in self.df.columns.values]
 
             return html.Div(
+                className=self.wrapper_class_name,
                 children=[
                     html.Div(
                         className=self.input_label_class_name,
