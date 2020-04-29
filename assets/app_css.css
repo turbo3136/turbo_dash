@@ -12,7 +12,7 @@ body {
     --sidebar-width: 300px;
     --sidebar-color: #fff;
     --sidebar-text-color: #444;
-    --current-link-color: #e0ecff;
+    --current-link-color: #edf3fc;
 }
 
 .dashboard-wrapper {
@@ -90,5 +90,16 @@ a:link, a:visited {
 
 .content {
     grid-area: content;
-    padding: 10px 0 0 0 ;
+    padding: 20px 10px 0 0;
+}
+
+.output {
+    padding: 10px 10px 10px 10px;
+    box-shadow: 0 0 4px 4px #bbb;
+}
+
+.graph-input {
+    display: inline-block;
+    width: 120px;
+    margin: 4px 4px 4px 4px;
 }

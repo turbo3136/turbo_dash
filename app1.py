@@ -2,7 +2,7 @@ import plotly.express as px
 
 from app import app
 from turbo_dash import turbo_dash
-from turbo_dash.inputs import TurboInput, TurboFilter
+from turbo_dash.inputs import TurboInput
 from turbo_dash.outputs import TurboOutput
 from turbo_dash.dashboard_components import TurboHeader, TurboLogo, TurboLinks, TurboLink
 
@@ -18,13 +18,11 @@ list_of_inputs = [
         input_type='Dropdown',
         df=df,
         value_column='country',
-        turbo_filter_object=TurboFilter(
-            input_component_id='test_input',
-            filter_input_property_list=['value'],
-            lambda_function_list=[
-                lambda dataframe, value: dataframe[dataframe['country'] == value]
-            ],
-        ),
+        input_component_id='test_input',
+        filter_input_property_list=['value'],
+        lambda_function_list=[
+            lambda dataframe, value: dataframe[dataframe['country'] == value]
+        ],
         input_label_class_name='sidebar-label',
     ),
     TurboInput(
@@ -32,13 +30,11 @@ list_of_inputs = [
         input_type='RangeSlider',
         df=df,
         value_column='year',
-        turbo_filter_object=TurboFilter(
-            input_component_id='test_input1',
-            filter_input_property_list=['value'],
-            lambda_function_list=[
-                lambda dataframe, value: dataframe[(dataframe['year'] >= value[0]) & (dataframe['year'] <= value[1])]
-            ],
-        ),
+        input_component_id='test_input1',
+        filter_input_property_list=['value'],
+        lambda_function_list=[
+            lambda dataframe, value: dataframe[(dataframe['year'] >= value[0]) & (dataframe['year'] <= value[1])]
+        ],
         input_label_class_name='sidebar-label',
     ),
 ]
@@ -54,6 +50,8 @@ list_of_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
+        graph_input_list=['output_type', 'x', 'y', 'z', 'color', 'size', 'hover_data'],
+        wrapper_class_name='output',
     )
 ]
 
