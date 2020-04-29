@@ -33,7 +33,7 @@ class TurboLogo:
 
     def __init__(
             self,
-            logo_component_id=None,
+            logo_component_id='dummy-id',
             logo_class_name=None,
             logo_file_path=None,
             logo_href=None,
@@ -90,7 +90,7 @@ class TurboLink:
 
     def __init__(
             self,
-            link_component_id=None,
+            link_component_id='dummy-id',
             link_href=None,
             link_class_name=None,
             link_text=None,
