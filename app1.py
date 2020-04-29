@@ -50,7 +50,7 @@ list_of_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
-        graph_input_list=['output_type', 'x', 'y', 'z', 'color', 'size'],  # hover data doesn't work yet
+        graph_input_list=['output_type', 'x', 'y', 'z', 'color', 'size', 'hover_data'],
         wrapper_class_name='output',
     )
 ]

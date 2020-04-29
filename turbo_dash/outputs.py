@@ -22,7 +22,7 @@ class TurboOutput:
             z=None,
             color=None,
             size=None,
-            hover_data=None,
+            hover_data=[],
             template=None,
             turbo_input_list=[],
             graph_input_list=[],
@@ -40,7 +40,7 @@ class TurboOutput:
         :param z: optional, column we'll use for the z axis
         :param color: optional, plotly express color argument (column to color accordingly)
         :param size: optional, column we'll use for size
-        :param hover_data: optional, column we'll use for the hover_data axis
+        :param hover_data: optional, list of columns we'll use for the hover_data axis
         :param template: optional, plotly express template for the output
         :param turbo_input_list: optional, list of TurboInput objects that will affect this output
         :param graph_input_list: optional, list of strings corresponding to different inputs we want to apply

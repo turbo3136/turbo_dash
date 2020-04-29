@@ -149,6 +149,11 @@ class TurboInput:
         if self.input_type in ('x', 'y', 'z', 'color', 'size', 'hover_data'):
             filter_options = [{'label': col, 'value': col} for col in self.df.columns.values]
 
+            if self.input_type == 'hover_data':  # if this input is for hover_data, set multi to True
+                multi = True
+            else:  # otherwise, set multi to False
+                multi = False
+
             return html.Div(
                 className=self.wrapper_class_name,
                 children=[
@@ -160,7 +165,8 @@ class TurboInput:
                         id=self.input_component_id,
                         className=self.input_class_name,
                         options=filter_options,
-                        value=self.default_value
+                        value=self.default_value,
+                        multi=multi,
                     ),
                 ]
             )
