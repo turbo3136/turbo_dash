@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="turbo_dash",
-    version="0.1.1",
+    version="0.2.0",
     author="turbo3136",
     author_email="turbo3136@gmail.com",
     description="automated Dash framework with templates",
