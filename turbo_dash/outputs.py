@@ -363,7 +363,6 @@ class PlotlyExpressLookup:
         # line_polar
         # bar_polar
         # choropleth
-        # scatter_geo
         # line_geo
         # scatter_mapbox
         # choropleth_mapbox
