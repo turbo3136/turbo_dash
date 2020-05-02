@@ -4,7 +4,6 @@ from app import app
 from turbo_dash import turbo_dash
 from turbo_dash.inputs import TurboInput
 from turbo_dash.outputs import TurboOutput
-from turbo_dash.dashboard_components import TurboHeader, TurboLogo, TurboLinks, TurboLink
 
 from config import LOGO_PATH
 
@@ -50,7 +49,18 @@ list_of_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
-        graph_input_list=['output_type', 'x', 'y', 'z', 'color', 'size', 'hover_data'],
+        graph_input_list=[
+            'output_type',
+            'x',
+            'y',
+            'z',
+            'color',
+            'size',
+            'hover_data',
+            'locations',
+            'locationmode',
+            'projection'
+        ],
         wrapper_class_name='output',
     )
 ]
