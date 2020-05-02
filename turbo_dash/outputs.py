@@ -23,6 +23,10 @@ class TurboOutput:
             color=None,
             size=None,
             hover_data=[],
+            locations=None,
+            locationmode=None,
+            points=None,
+            projection=None,
             template=None,
             turbo_input_list=[],
             graph_input_list=[],
@@ -40,7 +44,11 @@ class TurboOutput:
         :param z: optional, column we'll use for the z axis
         :param color: optional, plotly express color argument (column to color accordingly)
         :param size: optional, column we'll use for size
-        :param hover_data: optional, list of columns we'll use for the hover_data axis
+        :param hover_data: optional, list of columns we'll use for the hover_data
+        :param locations: optional, column we'll use for the locations data (used in geo plots)
+        :param locationmode: optional, plotly express locationmode argument (used in geo plots)
+        :param points: optional, plotly express points argument
+        :param projection: optional, plotly express projection argument
         :param template: optional, plotly express template for the output
         :param turbo_input_list: optional, list of TurboInput objects that will affect this output
         :param graph_input_list: optional, list of strings corresponding to different inputs we want to apply
@@ -58,6 +66,10 @@ class TurboOutput:
         self.color = color
         self.size = size
         self.hover_data = hover_data
+        self.locations = locations
+        self.locationmode = locationmode
+        self.points = points
+        self.projection = projection
         self.template = template
         self.turbo_input_list = turbo_input_list
         self.graph_input_list = graph_input_list
@@ -72,6 +84,10 @@ class TurboOutput:
             'color': self.color,
             'size': self.size,
             'hover_data': self.hover_data,
+            'locations': self.locations,
+            'locationmode': self.locationmode,
+            'points': self.points,
+            'projection': self.projection,
             'template': self.template,
         }
 
@@ -212,6 +228,10 @@ class TurboOutput:
             color=None,
             size=None,
             hover_data=None,
+            locations=None,
+            locationmode=None,
+            points=None,
+            projection=None,
             template=None,
     ):
         """assemble the output object we want and return the plotly express object"""
@@ -309,9 +329,38 @@ class PlotlyExpressLookup:
                 }
             ),
             (
-                'scatter3d', {
+                'scatter_3d', {
                     'object': px.scatter_3d,
                     'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
+                }
+            ),
+            (
+                'scatter_geo', {
+                    'object': px.scatter_geo,
+                    'inputs': [
+                        'data_frame',
+                        'locations',
+                        'locationmode',
+                        'color',
+                        'size',
+                        'hover_data',
+                        'template',
+                        'projection',
+                    ],
+                }
+            ),
+            (
+                'choropleth', {
+                    'object': px.choropleth,
+                    'inputs': [
+                        'data_frame',
+                        'locations',
+                        'locationmode',
+                        'color',
+                        'hover_data',
+                        'template',
+                        'projection',
+                    ],
                 }
             ),
         ])
@@ -327,8 +376,6 @@ class PlotlyExpressLookup:
         # scatter_polar
         # line_polar
         # bar_polar
-        # choropleth
-        # scatter_geo
         # line_geo
         # scatter_mapbox
         # choropleth_mapbox
@@ -344,6 +391,42 @@ class PlotlyExpressLookup:
         # funnel_area
 
         self.list_of_chart_strings = list(self._chart_lookup_dict.keys())
+
+        self._arg_options_lookup_dict = OrderedDict([
+            (
+                'projection', [  # projection arg, used by scatter_geo
+                    'equirectangular',
+                    'mercator',
+                    'orthographic',
+                    'natural earth',
+                    'kavrayskiy7',
+                    'miller',
+                    'robinson',
+                    'eckert4',
+                    'azimuthal equal area',
+                    'azimuthal equidistant',
+                    'conic equal area',
+                    'conic conformal',
+                    'conic equidistant',
+                    'gnomonic',
+                    'stereographic',
+                    'mollweide',
+                    'hammer',
+                    'transverse mercator',
+                    'albers usa',
+                    'winkel tripel',
+                    'aitoff',
+                    'sinusoidal'
+                ]
+            ),
+            (
+                'locationmode', [
+                    'ISO-3',
+                    'USA-states',
+                    'country names',
+                ]
+            ),
+        ])
 
     def _get_chart_dict(self, chart_string):
         """return the dictionary for the specified plotly express chart"""
@@ -368,3 +451,7 @@ class PlotlyExpressLookup:
     def get_chart_inputs(self, chart_string):
         """return the plotly express input arguments corresponding to the chart_string"""
         return self._get_chart_dict_value(chart_string, key='inputs')
+
+    def get_arg_options(self, arg_string):
+        """return a list of argument options corresponding to the arg_string"""
+        return self._arg_options_lookup_dict.get(arg_string)
