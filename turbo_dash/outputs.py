@@ -329,7 +329,7 @@ class PlotlyExpressLookup:
                 }
             ),
             (
-                'scatter3d', {
+                'scatter_3d', {
                     'object': px.scatter_3d,
                     'inputs': ['data_frame', 'x', 'y', 'z', 'color', 'size', 'hover_data', 'template'],
                 }
@@ -349,6 +349,20 @@ class PlotlyExpressLookup:
                     ],
                 }
             ),
+            (
+                'choropleth', {
+                    'object': px.choropleth,
+                    'inputs': [
+                        'data_frame',
+                        'locations',
+                        'locationmode',
+                        'color',
+                        'hover_data',
+                        'template',
+                        'projection',
+                    ],
+                }
+            ),
         ])
 
         # not supported yet
@@ -362,7 +376,6 @@ class PlotlyExpressLookup:
         # scatter_polar
         # line_polar
         # bar_polar
-        # choropleth
         # line_geo
         # scatter_mapbox
         # choropleth_mapbox
