@@ -99,6 +99,29 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'RadioItems':
+            filter_options = [
+                # groupby objects are cool, they create a list of dfs and the grouped values
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                {'label': i[0], 'value': i[1]} for i, i_df in self.df.groupby([self.label_column, self.value_column])
+            ]
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.RadioItems(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=filter_options,
+                        value=self.default_value,
+                    ),
+                ]
+            )
+
         if self.input_type == 'Checklist':
             filter_options = [
                 # groupby objects are cool, they create a list of dfs and the grouped values
