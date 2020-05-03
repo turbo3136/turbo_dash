@@ -215,6 +215,7 @@ class TurboOutput:
             plotly_express_lookup_object=self._plotly_express_lookup_object,
             default_value=self.default_kwargs.get(graph_input),
             wrapper_class_name='graph-input',
+            persistence=True,  # default graph inputs to have a persistent state
         )
 
     def _assemble_kwargs_dict(self, graph_input_args, default_data_frame, default_kwargs):
