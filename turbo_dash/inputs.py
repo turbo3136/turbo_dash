@@ -149,6 +149,30 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'Slider':
+            values = self.df[self.value_column].unique()
+            minimum = min(values)
+            maximum = max(values)
+            marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Slider(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min=minimum,
+                        max=maximum,
+                        marks=marks,
+                        step=None,
+                    ),
+                ]
+            )
+
         if self.input_type == 'RangeSlider':
             values = self.df[self.value_column].unique()
             minimum = min(values)
