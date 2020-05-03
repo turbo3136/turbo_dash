@@ -36,6 +36,18 @@ list_of_inputs = [
         ],
         input_label_class_name='sidebar-label',
     ),
+    TurboInput(
+        output_id_list=['test_output'],
+        input_type='Checklist',
+        df=df,
+        value_column='continent',
+        input_component_id='test_input2',
+        filter_input_property_list=['value'],
+        lambda_function_list=[
+            lambda dataframe, value: dataframe[dataframe['continent'].isin(value)]
+        ],
+        input_label_class_name='sidebar-label',
+    ),
 ]
 
 list_of_outputs = [
