@@ -66,7 +66,14 @@ class TurboInput:
         self.plotly_express_lookup_object = plotly_express_lookup_object
 
         self.default_value = default_value
+
         self.persistence = persistence
+        # if we provided a persistence argument, always set the persistence_type to memory
+        # This allows us to reset it with a page refresh. The other options cause weird behavior.
+        if self.persistence is not None:
+            self.persistence_type = 'memory'
+        else:
+            self.persistence_type = None
 
         # assemble the dash dependencies input list, this is an important part
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
@@ -99,6 +106,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -123,6 +131,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -151,6 +160,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -176,6 +186,7 @@ class TurboInput:
                         marks=marks,
                         step=None,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -202,6 +213,7 @@ class TurboInput:
                         marks=marks,
                         step=None,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -225,6 +237,7 @@ class TurboInput:
                         initial_visible_month=maximum,
                         date=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -257,6 +270,7 @@ class TurboInput:
                         start_date=start_date,
                         end_date=end_date,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -280,6 +294,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -306,6 +321,7 @@ class TurboInput:
                         value=self.default_value,
                         multi=multi,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -327,6 +343,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
