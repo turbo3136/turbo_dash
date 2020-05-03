@@ -103,3 +103,26 @@ a:link, a:visited {
     width: 120px;
     margin: 4px 4px 4px 4px;
 }
+
+/*.tabs-container {
+
+}*/
+
+/*.tabs {
+
+}*/
+
+.tab {
+    max-width: 120px !important;
+    color: #666;
+    background-color: #fff !important;
+    font-weight: bold !important;
+}
+
+.tab:hover {
+    color: #000;
+}
+
+.tab--selected {
+    background-color: var(--current-link-color) !important;
+}
