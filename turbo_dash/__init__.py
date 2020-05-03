@@ -13,6 +13,7 @@ class turbo_dash:
             app_to_callback,
             list_of_inputs=None,
             list_of_outputs=None,
+            dict_of_tab_outputs=None,
             header_object=None,
             layout_template=None,
             inputs_class_name=None,
@@ -26,6 +27,8 @@ class turbo_dash:
         :param app_to_callback: dash app we want to make reactive (i.e. call back)
         :param list_of_inputs: optional, list of TurboInput objects to use in our dashboard
         :param list_of_outputs: optional, list of TurboOutput objects to use in our dashboard
+        :param dict_of_tab_outputs: optional, OrderedDict of tab labels and TurboOutput object lists (key, value).
+            If dict_of_tab_outputs is given, list_of_outputs will be overwritten.
         :param header_object: optional, TurboHeader object to display
         :param layout_template: optional, template to use for the layout
         :param inputs_class_name: optional, css class name for the inputs div
@@ -39,6 +42,15 @@ class turbo_dash:
         self.app_to_callback = app_to_callback
         self.list_of_inputs = list_of_inputs
         self.list_of_outputs = list_of_outputs
+        self.dict_of_tab_outputs = dict_of_tab_outputs
+
+        # if we provided a dict_of_tab_outputs, grab some information
+        if self.dict_of_tab_outputs is not None:
+            self.include_tabs = True
+            self.list_of_outputs = [output for key, output_list in self.dict_of_tab_outputs.items() for output in output_list]
+        else:
+            self.include_tabs = False
+
         self.header_object = header_object
         self.layout_template = layout_template
         self.inputs_class_name = inputs_class_name
@@ -69,6 +81,31 @@ class turbo_dash:
         return True
 
     def create_layout(self):
+        # If we want to use tabs, assemble them. Otherwise just grab the list of html.
+        # Note, this setup is not ideal for performance!
+        # Because we don't include tabs in the callback, we load all data for every tab each time the callback executes
+        if self.include_tabs:
+            list_of_output_children = [
+                dcc.Tabs(
+                    children=[
+                        dcc.Tab(
+                            label=label,
+                            # if we're using a template, use the correct CSS class
+                            className='tab' if self.layout_template == 'turbo' else None,
+                            selected_className='tab--selected' if self.layout_template == 'turbo' else None,
+                            children=[turbo_output.html for turbo_output in turbo_output_list],
+                        ) for label, turbo_output_list in self.dict_of_tab_outputs.items()
+                    ],
+                    persistence=True,
+                    persistence_type='memory',
+                    # if we're using a template, use the correct CSS class
+                    parent_className='tabs-container' if self.layout_template == 'turbo' else None,
+                    className='tabs' if self.layout_template == 'turbo' else None,
+                )
+            ]
+        else:
+            list_of_output_children = [o.html for o in self.list_of_outputs]
+
         if self.layout_template is None or self.layout_template == 'default':
             # default layout, no divs or classes
             return html.Div(
@@ -80,7 +117,7 @@ class turbo_dash:
                     ),
                     html.Div(
                         className=self.outputs_class_name,
-                        children=[o.html for o in self.list_of_outputs]
+                        children=list_of_output_children
                     ),
                 ],
             )
@@ -100,7 +137,7 @@ class turbo_dash:
                             ),  # /sidebar
                             html.Div(  # content
                                 className='content',
-                                children=[o.html for o in self.list_of_outputs]
+                                children=list_of_output_children
                             ),  # /sidebar
                         ]
                     ),  # /sidebar-and-content
