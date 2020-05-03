@@ -146,13 +146,32 @@ class TurboOutput:
         """grab some important indices we'll use in the callback"""
         ret = {}
 
+        # the following variables will contain the filter_input_property_list from the turbo inputs
+        # they determine the indices we need to differentiate between turbo inputs and graph inputs
+        if self.turbo_input_list:
+            turbo_filter_property_list = [
+                input_property
+                for turbo_input in self.turbo_input_list
+                for input_property in turbo_input.filter_input_property_list
+            ]
+        else:
+            turbo_filter_property_list = None
+        if self.graph_input_list:
+            graph_filter_property_list = [
+                input_property
+                for turbo_input in self.graph_turbo_input_list
+                for input_property in turbo_input.filter_input_property_list
+            ]
+        else:
+            graph_filter_property_list = None
+
         if self.turbo_input_list:  # if we provided turbo inputs, log the indices
             ret['turbo_start'] = 0
-            ret['turbo_stop'] = ret['turbo_start'] + len(self.turbo_input_list) - 1
+            ret['turbo_stop'] = ret['turbo_start'] + len(turbo_filter_property_list) - 1
 
             if self.graph_input_list:  # if we provided graph inputs, log the indices
                 ret['graph_start'] = ret['turbo_stop'] + 1
-                ret['graph_stop'] = ret['graph_start'] + len(self.graph_input_list) - 1
+                ret['graph_stop'] = ret['graph_start'] + len(graph_filter_property_list) - 1
             else:
                 ret['graph_start'] = None
                 ret['graph_stop'] = None
@@ -163,7 +182,7 @@ class TurboOutput:
 
             if self.graph_input_list:  # if we provided graph inputs, log the indices
                 ret['graph_start'] = 0
-                ret['graph_stop'] = ret['graph_start'] + len(self.graph_input_list) - 1
+                ret['graph_stop'] = ret['graph_start'] + len(graph_filter_property_list) - 1
             else:
                 ret['graph_start'] = None
                 ret['graph_stop'] = None
@@ -181,7 +200,10 @@ class TurboOutput:
     def _create_graph_turbo_input(self, graph_input):
         """create the TurboInput object for a graph input based on the provided string"""
         # first, generate a random ID we'll use for this input
-        random_input_component_id = ''.join([random.choice(string.ascii_lowercase + string.digits) for n in range(32)])
+        random_input_component_id = ''.join(
+            ['graph_input: {} - '.format(graph_input)] +
+            [random.choice(string.ascii_lowercase + string.digits) for n in range(32)]
+        )
 
         return TurboInput(
             output_id_list=[self.output_component_id],
