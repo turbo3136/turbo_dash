@@ -198,6 +198,28 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'DatePickerSingle':
+            minimum = min(self.df[self.value_column])
+            maximum = max(self.df[self.value_column])
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.DatePickerSingle(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min_date_allowed=minimum,
+                        max_date_allowed=maximum,
+                        initial_visible_month=maximum,
+                        date=self.default_value,
+                    ),
+                ]
+            )
+
         """
         ## now we handle graph_input input types, i.e. inputs that directly affect the graph like the y axis
         """
