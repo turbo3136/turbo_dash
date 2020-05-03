@@ -220,6 +220,37 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'DatePickerRange':
+            minimum = self.df[self.value_column].min()
+            maximum = self.df[self.value_column].max()
+
+            # if we didn't provide a default value for start and end dates, set them to None
+            if self.default_value is None:
+                start_date = None
+                end_date = None
+            else:  # otherwise, grab those values
+                start_date = self.default_value[0]
+                end_date = self.default_value[1]
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.DatePickerRange(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min_date_allowed=minimum,
+                        max_date_allowed=maximum,
+                        initial_visible_month=maximum,
+                        start_date=start_date,
+                        end_date=end_date,
+                    ),
+                ]
+            )
+
         """
         ## now we handle graph_input input types, i.e. inputs that directly affect the graph like the y axis
         """
