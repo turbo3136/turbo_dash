@@ -20,6 +20,7 @@ class TurboInput:
             input_label_class_name=None,
             plotly_express_lookup_object=None,
             default_value=None,
+            persistence=None,
     ):
         """input object that will assemble the information we need
 
@@ -40,6 +41,7 @@ class TurboInput:
         :param input_label_class_name: optional, css class name for the label of the input object
         :param plotly_express_lookup_object: optional, object to look up information about plotly express objects
         :param default_value: optional, default value to initialize the filter with
+        :param persistence: optional, plotly express persistence argument for whether the value should persist on reload
         """
         self.output_id_list = output_id_list
         self.input_type = input_type
@@ -64,6 +66,14 @@ class TurboInput:
         self.plotly_express_lookup_object = plotly_express_lookup_object
 
         self.default_value = default_value
+
+        self.persistence = persistence
+        # if we provided a persistence argument, always set the persistence_type to memory
+        # This allows us to reset it with a page refresh. The other options cause weird behavior.
+        if self.persistence is not None:
+            self.persistence_type = 'memory'
+        else:
+            self.persistence_type = None
 
         # assemble the dash dependencies input list, this is an important part
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
@@ -95,6 +105,88 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
+                    ),
+                ]
+            )
+
+        if self.input_type == 'RadioItems':
+            filter_options = [
+                # groupby objects are cool, they create a list of dfs and the grouped values
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                {'label': i[0], 'value': i[1]} for i, i_df in self.df.groupby([self.label_column, self.value_column])
+            ]
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.RadioItems(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=filter_options,
+                        value=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
+                    ),
+                ]
+            )
+
+        if self.input_type == 'Checklist':
+            filter_options = [
+                # groupby objects are cool, they create a list of dfs and the grouped values
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                {'label': i[0], 'value': i[1]} for i, i_df in self.df.groupby([self.label_column, self.value_column])
+            ]
+
+            # for a Checklist, we need to change the default value to an empty list if it's None
+            if self.default_value is None:
+                self.default_value = []
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Checklist(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=filter_options,
+                        value=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
+                    ),
+                ]
+            )
+
+        if self.input_type == 'Slider':
+            values = self.df[self.value_column].unique()
+            minimum = min(values)
+            maximum = max(values)
+            marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Slider(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min=minimum,
+                        max=maximum,
+                        marks=marks,
+                        step=None,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -120,6 +212,65 @@ class TurboInput:
                         value=[minimum, maximum],
                         marks=marks,
                         step=None,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
+                    ),
+                ]
+            )
+
+        if self.input_type == 'DatePickerSingle':
+            minimum = min(self.df[self.value_column])
+            maximum = max(self.df[self.value_column])
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.DatePickerSingle(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min_date_allowed=minimum,
+                        max_date_allowed=maximum,
+                        initial_visible_month=maximum,
+                        date=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
+                    ),
+                ]
+            )
+
+        if self.input_type == 'DatePickerRange':
+            minimum = self.df[self.value_column].min()
+            maximum = self.df[self.value_column].max()
+
+            # if we didn't provide a default value for start and end dates, set them to None
+            if self.default_value is None:
+                start_date = None
+                end_date = None
+            else:  # otherwise, grab those values
+                start_date = self.default_value[0]
+                end_date = self.default_value[1]
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.DatePickerRange(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        min_date_allowed=minimum,
+                        max_date_allowed=maximum,
+                        initial_visible_month=maximum,
+                        start_date=start_date,
+                        end_date=end_date,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -141,7 +292,9 @@ class TurboInput:
                         id=self.input_component_id,
                         className=self.input_class_name,
                         options=filter_options,
-                        value=self.default_value
+                        value=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -167,6 +320,8 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         multi=multi,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
@@ -187,6 +342,8 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
+                        persistence_type=self.persistence_type,
                     ),
                 ]
             )
