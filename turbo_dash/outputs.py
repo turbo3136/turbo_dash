@@ -249,7 +249,7 @@ class TurboOutput:
         for index, input_filter_value in enumerate(args):  # args is a list of all the filter input values
 
             # if the value provided is None, we'll return the original df, otherwise we'll do the filtering
-            if input_filter_value is not None:
+            if input_filter_value is not None and input_filter_value != []:
                 filtered_df = self.lambda_function_list[index](filtered_df, input_filter_value)
 
         return filtered_df
