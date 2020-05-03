@@ -20,6 +20,7 @@ class TurboInput:
             input_label_class_name=None,
             plotly_express_lookup_object=None,
             default_value=None,
+            persistence=None,
     ):
         """input object that will assemble the information we need
 
@@ -40,6 +41,7 @@ class TurboInput:
         :param input_label_class_name: optional, css class name for the label of the input object
         :param plotly_express_lookup_object: optional, object to look up information about plotly express objects
         :param default_value: optional, default value to initialize the filter with
+        :param persistence: optional, plotly express persistence argument for whether the value should persist on reload
         """
         self.output_id_list = output_id_list
         self.input_type = input_type
@@ -64,6 +66,7 @@ class TurboInput:
         self.plotly_express_lookup_object = plotly_express_lookup_object
 
         self.default_value = default_value
+        self.persistence = persistence
 
         # assemble the dash dependencies input list, this is an important part
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
@@ -95,6 +98,7 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -118,6 +122,7 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -145,6 +150,7 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -169,6 +175,7 @@ class TurboInput:
                         max=maximum,
                         marks=marks,
                         step=None,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -194,6 +201,7 @@ class TurboInput:
                         value=[minimum, maximum],
                         marks=marks,
                         step=None,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -216,6 +224,7 @@ class TurboInput:
                         max_date_allowed=maximum,
                         initial_visible_month=maximum,
                         date=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -247,6 +256,7 @@ class TurboInput:
                         initial_visible_month=maximum,
                         start_date=start_date,
                         end_date=end_date,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -268,7 +278,8 @@ class TurboInput:
                         id=self.input_component_id,
                         className=self.input_class_name,
                         options=filter_options,
-                        value=self.default_value
+                        value=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -294,6 +305,7 @@ class TurboInput:
                         options=filter_options,
                         value=self.default_value,
                         multi=multi,
+                        persistence=self.persistence,
                     ),
                 ]
             )
@@ -314,6 +326,7 @@ class TurboInput:
                         className=self.input_class_name,
                         options=filter_options,
                         value=self.default_value,
+                        persistence=self.persistence,
                     ),
                 ]
             )
