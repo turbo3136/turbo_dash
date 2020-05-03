@@ -1,3 +1,4 @@
+from datetime import datetime
 import pandas as pd
 import plotly.express as px
 
@@ -85,6 +86,20 @@ list_of_inputs = [
             lambda dataframe, date: dataframe[dataframe['datetime'] == date]
         ],
         input_label_class_name='sidebar-label',
+    ),
+    TurboInput(
+        output_id_list=['test_output'],
+        input_type='DatePickerRange',
+        df=df,
+        value_column='datetime',
+        input_component_id='test_input6',
+        filter_input_property_list=['start_date', 'end_date'],
+        lambda_function_list=[
+            lambda dataframe, start_date: dataframe[dataframe['datetime'] >= start_date],
+            lambda dataframe, end_date: dataframe[dataframe['datetime'] <= end_date],
+        ],
+        input_label_class_name='sidebar-label',
+        default_value=[datetime(1952, 1, 1), datetime(2007, 1, 1)]
     ),
 ]
 
