@@ -48,6 +48,18 @@ list_of_inputs = [
         ],
         input_label_class_name='sidebar-label',
     ),
+    TurboInput(
+        output_id_list=['test_output'],
+        input_type='RadioItems',
+        df=df,
+        value_column='continent',
+        input_component_id='test_input3',
+        filter_input_property_list=['value'],
+        lambda_function_list=[
+            lambda dataframe, value: dataframe[dataframe['continent'] == value]
+        ],
+        input_label_class_name='sidebar-label',
+    ),
 ]
 
 list_of_outputs = [
