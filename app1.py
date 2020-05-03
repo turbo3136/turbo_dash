@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.express as px
 
 from app import app
@@ -9,6 +10,7 @@ from config import LOGO_PATH
 
 # ['country', 'continent', 'year', 'lifeExp', 'pop', 'gdpPercap', 'iso_alpha', 'iso_num']
 df = px.data.gapminder()
+df['datetime'] = pd.to_datetime(df['year'], format='%Y')  # create a datetime column for our DatePicker examples
 
 
 list_of_inputs = [
@@ -69,6 +71,18 @@ list_of_inputs = [
         filter_input_property_list=['value'],
         lambda_function_list=[
             lambda dataframe, value: dataframe[dataframe['year'] == value]
+        ],
+        input_label_class_name='sidebar-label',
+    ),
+    TurboInput(
+        output_id_list=['test_output'],
+        input_type='DatePickerSingle',
+        df=df,
+        value_column='datetime',
+        input_component_id='test_input5',
+        filter_input_property_list=['date'],
+        lambda_function_list=[
+            lambda dataframe, date: dataframe[dataframe['datetime'] == date]
         ],
         input_label_class_name='sidebar-label',
     ),
