@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import plotly.express as px
 
 from app import app
@@ -39,7 +40,7 @@ list_of_inputs = [
     ),
 ]
 
-list_of_outputs = [
+list_of_tab1_outputs = [
     TurboOutput(
         output_component_id='app2_test_output',
         output_component_property='figure',
@@ -50,13 +51,40 @@ list_of_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
-    )
+    ),
+]
+list_of_tab2_outputs = [
+    TurboOutput(
+        output_component_id='app2_test_output1',
+        output_component_property='figure',
+        output_type='line',
+        df=df,
+        x='year',
+        y='lifeExp',
+        color='country',
+        template='seaborn',
+        turbo_input_list=list_of_inputs,
+    ),
+    TurboOutput(
+        output_component_id='app2_test_output2',
+        output_component_property='figure',
+        output_type='line',
+        df=df,
+        x='year',
+        y='gdpPercap',
+        color='country',
+        template='seaborn',
+        turbo_input_list=list_of_inputs,
+    ),
 ]
 
 td = turbo_dash(
     app_to_callback=app,
     list_of_inputs=list_of_inputs,
-    list_of_outputs=list_of_outputs,
+    dict_of_tab_outputs=OrderedDict([
+        ('tab1', list_of_tab1_outputs),
+        ('tab2', list_of_tab2_outputs),
+    ]),
     layout_template='turbo',
     turbo_header_logo_file_path=LOGO_PATH,
     turbo_header_links_list=[
