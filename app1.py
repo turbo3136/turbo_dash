@@ -26,6 +26,7 @@ list_of_inputs = [
             lambda dataframe, value: dataframe[dataframe['country'] == value]
         ],
         input_label_class_name='sidebar-label',
+        persistence=True,
     ),
     TurboInput(
         output_id_list=['test_output'],
@@ -86,6 +87,7 @@ list_of_inputs = [
             lambda dataframe, date: dataframe[dataframe['datetime'] == date]
         ],
         input_label_class_name='sidebar-label',
+        input_label='datetime - Pick a Date',
     ),
     TurboInput(
         output_id_list=['test_output'],
@@ -99,7 +101,8 @@ list_of_inputs = [
             lambda dataframe, end_date: dataframe[dataframe['datetime'] <= end_date],
         ],
         input_label_class_name='sidebar-label',
-        default_value=[datetime(1952, 1, 1), datetime(2007, 1, 1)]
+        default_value=[datetime(1952, 1, 1), datetime(2007, 1, 1)],
+        input_label='datetime - Pick a Range',
     ),
 ]
 
