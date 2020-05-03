@@ -99,6 +99,33 @@ class TurboInput:
                 ]
             )
 
+        if self.input_type == 'Checklist':
+            filter_options = [
+                # groupby objects are cool, they create a list of dfs and the grouped values
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                {'label': i[0], 'value': i[1]} for i, i_df in self.df.groupby([self.label_column, self.value_column])
+            ]
+
+            # for a Checklist, we need to change the default value to an empty list if it's None
+            if self.default_value is None:
+                self.default_value = []
+
+            return html.Div(
+                className=self.wrapper_class_name,
+                children=[
+                    html.Div(
+                        className=self.input_label_class_name,
+                        children=self.input_label,
+                    ),
+                    dcc.Checklist(
+                        id=self.input_component_id,
+                        className=self.input_class_name,
+                        options=filter_options,
+                        value=self.default_value,
+                    ),
+                ]
+            )
+
         if self.input_type == 'RangeSlider':
             values = self.df[self.value_column].unique()
             minimum = min(values)
