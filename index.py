@@ -3,10 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from app import app, wrapper_div_id
-import app1
-import app2
-import homepage
-import fourohfour
+from apps import homepage, app1, app2, fourohfour
 
 # this initial layout is an empty div with our wrapper_div_id from the app
 # also notice the dcc.Location object. This tracks what page we're on.
