@@ -51,6 +51,8 @@ list_of_tab1_outputs = [
         color='country',
         template='seaborn',
         turbo_input_list=list_of_inputs,
+        output_label='Output Label Example',
+        output_label_class_name='output-label',
     ),
 ]
 list_of_tab2_outputs = [

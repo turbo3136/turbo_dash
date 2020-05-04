@@ -31,6 +31,8 @@ class TurboOutput:
             turbo_input_list=[],
             graph_input_list=[],
             wrapper_class_name=None,
+            output_label=None,
+            output_label_class_name=None,
     ):
         """output object that will assemble the information we need
 
@@ -55,6 +57,8 @@ class TurboOutput:
             directly to the graph. These are things like 'output_type' for choosing what plot we want to use.
             'x' for choosing the x-axis, etc.
         :param wrapper_class_name: optional, css class name to use for the wrapper around the output
+        :param output_label: optional, text to display at the top of the output
+        :param output_label_class_name: optional, css class name to use for the wrapper around the output_label
         """
         self.output_component_id = output_component_id
         self.output_component_property = output_component_property
@@ -74,6 +78,8 @@ class TurboOutput:
         self.turbo_input_list = turbo_input_list
         self.graph_input_list = graph_input_list
         self.wrapper_class_name = wrapper_class_name
+        self.output_label = output_label
+        self.output_label_class_name = output_label_class_name
 
         self.default_kwargs = {
             'output_type': self.output_type,
@@ -137,9 +143,16 @@ class TurboOutput:
 
         graph_and_inputs = graph_inputs + graph
 
+        # if we want to add a label to the top of the output, add it
+        if self.output_label is not None:
+            output_label_html_list = [html.Div(className=self.output_label_class_name, children=self.output_label)]
+            output_html = output_label_html_list + graph_and_inputs
+        else:  # otherwise, ignore the label
+            output_html = graph_and_inputs
+
         return html.Div(
             className=self.wrapper_class_name,
-            children=graph_and_inputs,
+            children=output_html,
         )
 
     def _get_input_list_index_dict(self):
