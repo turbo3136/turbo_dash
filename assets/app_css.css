@@ -13,6 +13,7 @@ body {
     --sidebar-color: #fff;
     --sidebar-text-color: #444;
     --current-link-color: #edf3fc;
+    --label-text-color: #444;
 }
 
 .dashboard-wrapper {
@@ -96,6 +97,14 @@ a:link, a:visited {
 .output {
     padding: 10px 10px 10px 10px;
     box-shadow: 0 0 4px 4px #bbb;
+}
+
+.output-label {
+    text-align: center;
+    font-size: 16pt;
+    font-weight: bold;
+    padding-top: 10px;
+    color: var(--label-text-color);
 }
 
 .graph-input {
