@@ -169,7 +169,7 @@ class TurboInput:
             values = self.df[self.value_column].unique()
             minimum = min(values)
             maximum = max(values)
-            marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+            marks = {str(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
 
             return html.Div(
                 className=self.wrapper_class_name,
@@ -195,7 +195,7 @@ class TurboInput:
             values = self.df[self.value_column].unique()
             minimum = min(values)
             maximum = max(values)
-            marks = {int(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+            marks = {str(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
 
             return html.Div(
                 className=self.wrapper_class_name,
