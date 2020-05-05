@@ -14,5 +14,8 @@ automated Dash framework with templates
   - `./fourohfour.py` - fourohfour layout and callback
 
 ## Example Output from App
-![Example 1](https://raw.githubusercontent.com/turbo3136/turbo_dash/master/assets/app1_example.png)
-![Example 2](https://raw.githubusercontent.com/turbo3136/turbo_dash/master/assets/app2_example.png)
+app1 Example:
+![app1 Example](./assets/app1_example.png)
+
+app2 Example:
+![app2 Example](./assets/app2_example.png)
