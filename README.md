@@ -4,42 +4,151 @@ automated Dash framework with templates
 ## Quickstart
 `pip install turbo-dash`
 
-## Usage
-- Multi Page App:
-  - `./app.py` - initialize the app and server
-  - `./index.py` - callback for page content Div (run this file to run the app)
-  - `./apps/homepage.py` - homepage layout and callback
-  - `./apps/app1.py` - app1 layout and callback
-  - `./apps/app2.py` - app2 layout and callback
-  - `./apps/fourohfour.py` - fourohfour layout and callback
+## Goal
+The goal of the `turbo_dash` project is to create a wrapper for [plotly dash](https://plotly.com/dash/) that allows an 
+inexperienced python developer to quickly create a simple, clean, interactive, easy to manipulate dashboard.
 
-## Example App
-app1:
-![app1](./assets/app1_example.png)
+## OKRs
+<style> 
+	table, th, td { 
+    	border: 1px solid grey; 
+    	border-collapse: collapse; 
+    	padding: 6px; 
+  	} 
+</style>
 
-app2:
-![app2](./assets/app2_example.png)
+<table>
+    <tbody>
+        <tr>
+            <th>Objectives</th>
+            <th>Key Results</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td rowspan="3">
+                1. `turbo_dash` requires minimal python, plotly, or dash knowledge to create a fully functional 
+                dashboard, as measured by:
+            </td>
+            <td>1. less than 10 lines of code required per object</td>
+            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+        </tr>
+        <tr>
+            <td>2. full documentation with examples for every developer-facing object</td>
+            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+        </tr>
+        <tr>
+            <td>3. a suite of user-friendly templates that design the layout for the developer</td>
+            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+        </tr>
+        <tr>
+            <td>
+                2. `turbo_dash` executes commands quickly and displays minimal lag between 
+                input and output, as measured by:
+            </td>
+            <td>1. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
+            <td>
+                <span 
+                    style="
+                        height: 25px;
+                        width: 25px; 
+                        background-color: #bbb; 
+                        border-radius: 50%; 
+                        display: inline-block;
+                    "
+                >
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>3. `turbo_dash` doesn't break, as measured by:</td>
+            <td>1. comprehensive test suite</td>
+            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+        </tr>
+    </tbody>
+</table>
 
-## Important Things to Know
-- `turbo_dash` class:
-  - Properties to call in each app:
-    - `turbo_dash.layout`: create the app's layout
-    - `turbo_dash.callbacks`: reference the app's callback function(s)
-  - Creating a `turbo_dash` instance:
-    - Include your inputs and outputs
-      - If you want tabbed outputs, like in `app2.py`, separate you output lists into a `dict`. Use an `OrderedDict` if you want to preserve the tab order.
-    - Pick which layout template you want to use
-    - Include information about your header, if you want it
-- `TurboInput` class:
-  - Creating a `TurboInput` instance:
-    - Include a list of outputs this input affects
-    - Pick which input you want to use (check the source code for the most up to date list)
-    - Include the dataframe and columns relevant to this input
-    - Include the list of properties for this input (usually ['value'], but can be ['start_date', 'end_date'] for date ranges)
-    - Include a list of functions that will manipulate the dataframe based on the list of properties
-- `TurboOutput` class:
-  - Creating a `TurboOutput` class:
-    - Pick the `output_component_id` and `output_type` (i.e. what type of chart you want to output)
-    - Pass the dataframe and relevant plotting arguments (e.g. `x`, `y`, `color`, etc)
-    - Include the list of `TurboInput`s that will affect this output
-    - If you want inputs where you can manipulate the output, like in `app1`, include the `graph_input_list` parameter.
+## Example minimalist app
+`app.py`
+```
+import turbo_dash
+
+# grab our data
+df = turbo_dash.data.gapminder()
+
+# Here's where all the magic happens. This creates our dashboard.
+turbo_dashboard = turbo_dash.dashboard(
+    # template
+    template='turbo',
+
+    # dashboard pages
+    dashboard_page_list=[
+        # App 1
+        turbo_dash.dashboard_page(
+            # page information
+            url='/app1',
+            name='App 1',
+
+            # data
+            df=df,  # setting our data at the page level allows us to use different datasets for each page
+
+            # menu, i.e. sidebar with filters
+            menu=turbo_dash.turbo_menu(
+                df=df,
+                filter_list=[
+                    turbo_dash.turbo_filter(type='Dropdown', column='country'),
+                    turbo_dash.turbo_filter(type='RangeSlider', column='year'),
+                ],
+            ),
+
+            # content, i.e. graphs, images, etc
+            content=turbo_dash.turbo_content(
+                df=df,
+                output_list=[
+                    # bar graph of population vs year
+                    turbo_dash.turbo_output(type='bar', x='year', y='pop'),
+
+                    # line graph of life expectancy vs year with an input to change the y axis to a different column
+                    turbo_dash.turbo_output(
+                        type='line',
+                        x='year',
+                        y='lifeExp',
+                        input_list=['y'],
+                    ),
+                ],
+            ),
+        ),
+
+        # App 2
+        turbo_dash.dashboard_page(
+            # page information
+            url='/app2',
+            name='App 2',
+
+            # data
+            df=df,  # setting our data at the page level allows us to use different datasets for each page
+
+            # menu, i.e. sidebar with filters
+            menu=turbo_dash.turbo_menu(
+                df=df,
+                filter_list=[
+                    turbo_dash.turbo_filter(type='Checklist', column='continent'),
+                ],
+            ),
+
+            # content, i.e. graphs, images, etc
+            content=turbo_dash.turbo_content(
+                df=df,
+                output_list=[
+                    # line graph of gdpPercap vs year
+                    turbo_dash.turbo_output(type='line', x='year', y='gdpPercap'),
+                ],
+            ),
+        ),
+
+    ],
+)
+
+# execute the code
+if __name__ == '__main__':
+    turbo_dashboard.run_dashboard()
+```
