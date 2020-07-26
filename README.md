@@ -21,29 +21,29 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
                 1. `turbo_dash` requires minimal python, plotly, or dash knowledge to create a fully functional 
                 dashboard, as measured by:
             </td>
-            <td>1. less than 10 lines of code required per object</td>
-            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+            <td>i. less than 10 lines of code required per object</td>
+            <td>:white-circle:</td>
         </tr>
         <tr>
-            <td>2. full documentation with examples for every developer-facing object</td>
-            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+            <td>ii. full documentation with examples for every developer-facing object</td>
+            <td>:white-circle:</td>
         </tr>
         <tr>
-            <td>3. a suite of user-friendly templates that design the layout for the developer</td>
-            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+            <td>iii. a suite of user-friendly templates that design the layout for the developer</td>
+            <td>:white-circle:</td>
         </tr>
         <tr>
             <td>
                 2. `turbo_dash` executes commands quickly and displays minimal lag between 
                 input and output, as measured by:
             </td>
-            <td>1. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
-            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+            <td>i. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
+            <td>:white-circle:</td>
         </tr>
         <tr>
             <td>3. `turbo_dash` doesn't break, as measured by:</td>
-            <td>1. comprehensive test suite</td>
-            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
+            <td>i. comprehensive test suite</td>
+            <td>:white-circle:</td>
         </tr>
     </tbody>
 </table>
