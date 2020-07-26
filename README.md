@@ -48,8 +48,8 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
     </tbody>
 </table>
 
-## Example minimalist app
-`app.py`
+## Example app
+`./app.py`
 ```
 import turbo_dash
 
