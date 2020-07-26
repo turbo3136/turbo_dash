@@ -57,14 +57,14 @@ import turbo_dash
 df = turbo_dash.data.gapminder()
 
 # Here's where all the magic happens. This creates our dashboard.
-turbo_dashboard = turbo_dash.dashboard(
+turbo_dashboard = turbo_dash.turbo_dashboard(
     # template
     template='turbo',
 
     # dashboard pages
     dashboard_page_list=[
         # App 1
-        turbo_dash.dashboard_page(
+        turbo_dash.turbo_dashboard_page(
             # page information
             url='/app1',
             name='App 1',
@@ -100,7 +100,7 @@ turbo_dashboard = turbo_dash.dashboard(
         ),
 
         # App 2
-        turbo_dash.dashboard_page(
+        turbo_dash.turbo_dashboard_page(
             # page information
             url='/app2',
             name='App 2',
