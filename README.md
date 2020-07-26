@@ -9,14 +9,6 @@ The goal of the `turbo_dash` project is to create a wrapper for [plotly dash](ht
 inexperienced python developer to quickly create a simple, clean, interactive, easy to manipulate dashboard.
 
 ## OKRs
-<style> 
-	table, th, td { 
-    	border: 1px solid grey; 
-    	border-collapse: collapse; 
-    	padding: 6px; 
-  	} 
-</style>
-
 <table>
     <tbody>
         <tr>
@@ -46,18 +38,7 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
                 input and output, as measured by:
             </td>
             <td>1. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
-            <td>
-                <span 
-                    style="
-                        height: 25px;
-                        width: 25px; 
-                        background-color: #bbb; 
-                        border-radius: 50%; 
-                        display: inline-block;
-                    "
-                >
-                </span>
-            </td>
+            <td><span style="height: 25px; width: 25px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span></td>
         </tr>
         <tr>
             <td>3. `turbo_dash` doesn't break, as measured by:</td>
