@@ -22,15 +22,15 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
                 dashboard, as measured by:
             </td>
             <td>i. less than 10 lines of code required per object</td>
-            <td>:white-circle:</td>
+            <td style="color: #aaa;">grey</td>
         </tr>
         <tr>
             <td>ii. full documentation with examples for every developer-facing object</td>
-            <td>:white-circle:</td>
+            <td style="color: #aaa;">grey</td>
         </tr>
         <tr>
             <td>iii. a suite of user-friendly templates that design the layout for the developer</td>
-            <td>:white-circle:</td>
+            <td style="color: #aaa;">grey</td>
         </tr>
         <tr>
             <td>
@@ -38,12 +38,12 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
                 input and output, as measured by:
             </td>
             <td>i. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
-            <td>:white-circle:</td>
+            <td style="color: #aaa;">grey</td>
         </tr>
         <tr>
             <td>3. `turbo_dash` doesn't break, as measured by:</td>
             <td>i. comprehensive test suite</td>
-            <td><span style='color: #bbb; font-size: 40px;'>&#x25CF;</span></td>
+            <td style="color: #aaa;">grey</td>
         </tr>
     </tbody>
 </table>
