@@ -1,20 +1,25 @@
+import pandas as pd
 
 
 class turbo_dashboard_page(object):
+    """
+
+    """
 
     def __init__(
             self,
-            url,
-            name,
-            df,
-            menu_filter_list=None,
-            output_list=(),
+            url: str,
+            name: str,
+            df: pd.DataFrame = None,
+            menu_filter_list: list = None,
+            output_list: list = None,
     ):
         """
 
-        :param url:
-        :param name:
-        :param df:
-        :param menu_filter_list:
-        :param output_list:
+        Args:
+            url (str):
+            name (str):
+            df (:obj: `pandas.DataFrame`, optional):
+            menu_filter_list (:obj: `list`, optional):
+            output_list (:obj: `list`, optional):
         """

@@ -1,30 +1,39 @@
 
 
 class turbo_dashboard(object):
+    """
+
+    """
 
     def __init__(
             self,
-            template=None,
-            dashboard_page_list=(),
+            template: str = None,
+            dashboard_page_list: list = None,
     ):
-        """create a multi-page Plotly Dash dashboard
+        """create a single or multi-page Plotly Dash dashboard
 
-        :param template: optional, layout template we want to use. Options include:
-            ['default', 'turbo', 'turbo-dark']
-        :param dashboard_page_list: optional, list of dashboard_page objects that c
+        Args:
+            template (:obj: `str`, optional): layout template we want to use. Options include:
+                ['default', 'turbo', 'turbo-dark']
+            dashboard_page_list (:obj: `list`, optional): list of turbo_dashboard_page objects
         """
         # maybe do some stuff, maybe don't, not sure
 
     def run_dashboard(
             self,
-            debug=False,
-            name=__name__,
+            debug: bool = False,
+            name: str = __name__,
+            is_in_production: bool = False,
     ):
         """
 
-        :param debug:
-        :param name:
-        :return:
+        Args:
+            debug (:obj: `bool`, optional):
+            name (:obj: `str`, optional):
+            is_in_production (:obj: `bool`, optional):
+
+        Returns:
+
         """
         # create the app, run the callbacks, etc
 

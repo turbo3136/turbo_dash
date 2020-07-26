@@ -1,14 +1,18 @@
 
 
 class turbo_filter(object):
+    """
+
+    """
 
     def __init__(
             self,
-            filter_type,
-            column=None,
+            filter_type: str,
+            column: str = None,
     ):
         """
 
-        :param filter_type:
-        :param column:
+        Args:
+            filter_type (str):
+            column (:obj: `str`, optional):
         """
