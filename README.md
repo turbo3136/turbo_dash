@@ -43,7 +43,7 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
         <tr>
             <td>3. `turbo_dash` doesn't break, as measured by:</td>
             <td>i. comprehensive test suite</td>
-            <td><span style='color: grey; font-size: 40px;'>&#129409;</span></td>
+            <td><span style='color: grey; font-size: 40px;'>&#x26AB;</span></td>
         </tr>
     </tbody>
 </table>
