@@ -17,7 +17,8 @@ class turbo_dashboard(object):
                 ['default', 'turbo', 'turbo-dark']
             dashboard_page_list (:obj: `list`, optional): list of turbo_dashboard_page objects
         """
-        # maybe do some stuff, maybe don't, not sure
+        self.template = template
+        self.dashboard_page_list = dashboard_page_list
 
     def run_dashboard(
             self,
@@ -25,17 +26,18 @@ class turbo_dashboard(object):
             name: str = __name__,
             is_in_production: bool = False,
     ):
-        """
+        """start the server, create the layouts, run the callbacks
 
         Args:
-            debug (:obj: `bool`, optional):
-            name (:obj: `str`, optional):
-            is_in_production (:obj: `bool`, optional):
+            debug (:obj: `bool`, optional): default `False`, set flask debug mode
+            name (:obj: `str`, optional): default `__name__`, the name flask will use for the app
+            is_in_production (:obj: `bool`, optional): default `False`, if it's in production, we'll
+                have to do some special stuff with the server
 
         Returns:
 
         """
-        # create the app, run the callbacks, etc
+        # maybe do some stuff
 
     # find all the pages and do the index.py thing
     # gather the callbacks
