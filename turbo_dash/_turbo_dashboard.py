@@ -40,30 +40,32 @@ class turbo_dashboard(object):
         self.dashboard_wrapper_div_id = dashboard_wrapper_div_id
 
         # set some internal variables
-        self._pathname_prefix = '/'
-        self._url_dict_key = 'url'
-        self._url_name_dict_key = 'name'
-        self._html_dict_key = 'html'
-        self._url_component_id = 'url'
-        self._url_component_property = 'pathname'
+        self._pathname_prefix = '/'  # prefix we need for Dash's pathname property
+        self._url_dict_key = 'url'  # string we'll use for the key of the url in _urls_names_and_html
+        self._url_name_dict_key = 'name'  # string we'll use for the key of the name in _urls_names_and_html
+        self._html_dict_key = 'html'  # string we'll use for the key of the html in _urls_names_and_html
+        self._url_component_id = 'url'  # Dash component ID for the url
+        self._url_component_property = 'pathname'  # Dash component property for the url
+
+        # prebuilt page info
         self._homepage_url = ''
         self._homepage_name = 'homepage'
-        self._homepage_template_name = 'homepage'
+        self._homepage_prebuilt_page_name = 'homepage'
         self._fourohfour_url = '404'
         self._fourohfour_name = '404'
-        self._fourohfour_template_name = '404'
+        self._fourohfour_prebuilt_page_name = '404'
 
         # if we're using a template that builds pages for us, like a homepage and 404 page, build and add them
         if self.template in ('turbo', 'turbo-dark'):
             self._homepage = turbo_dashboard_page(
                 url=self._homepage_url,
                 name=self._homepage_name,
-                prebuilt_template=self._homepage_template_name,
+                prebuilt_page=self._homepage_prebuilt_page_name,
             )
             self._fourohfour_page = turbo_dashboard_page(
                 url=self._fourohfour_url,
                 name=self._fourohfour_name,
-                prebuilt_template=self._fourohfour_template_name,
+                prebuilt_page=self._fourohfour_prebuilt_page_name,
             )
             self.dashboard_page_list.extend([self._homepage, self._fourohfour_page])  # add them to the dashboard list
 
