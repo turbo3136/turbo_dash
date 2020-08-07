@@ -87,7 +87,7 @@ class turbo_dashboard(object):
         # create the app and initiate everything (layout, )
         app = self._initiate_app(app_name=app_name)
 
-        # gather all the layouts into a dict
+        # gather all the layouts into an OrderedDict of dicts
         urls_names_and_html = self._urls_names_and_html(
             template=self.template,
         )
@@ -160,7 +160,7 @@ class turbo_dashboard(object):
             This gives us all the information we need to structure the app and create the layouts callback
 
         """
-        ret = OrderedDict([  # comprehend the dashboard page list
+        ret = OrderedDict([  # list comprehension on the dashboard page list
             (  # to create an OrderedDict of
                 page.url,  # page url keys
                 {  # connected to dictionaries with page url, name, html
@@ -168,7 +168,7 @@ class turbo_dashboard(object):
                     self._url_name_dict_key: page.name,
                     self._html_dict_key: page.html(template=template),
                 }
-            ) for page in self.dashboard_page_list
+            ) for page in self.dashboard_page_list  # iterate over the dashboard page list
         ])
 
         return ret
