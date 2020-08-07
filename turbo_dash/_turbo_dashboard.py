@@ -7,7 +7,18 @@ from ._turbo_dashboard_page import turbo_dashboard_page
 
 
 class turbo_dashboard(object):
-    """
+    """Class that helps us organize information, create a dashboard, and deploy it.
+
+    Methods:
+        run_dashboard: create the app, manage the layouts, run the callbacks, start the server.
+            Uses each of the protected methods below.
+
+    Protected Methods:
+        _initiate_app: initiate the app and layout
+        _urls_names_and_html: grab the url, name, and html based on the provided template for every page
+        _layouts_callback: run the layouts callback
+        _callbacks: run the dash callbacks for the layouts and each page
+        _run_server: run the server
 
     """
 
@@ -29,6 +40,10 @@ class turbo_dashboard(object):
         self.dashboard_wrapper_div_id = dashboard_wrapper_div_id
 
         # set some internal variables
+        self._pathname_prefix = '/'
+        self._url_dict_key = 'url'
+        self._url_name_dict_key = 'name'
+        self._html_dict_key = 'html'
         self._url_component_id = 'url'
         self._url_component_property = 'pathname'
         self._homepage_url = ''
@@ -73,14 +88,14 @@ class turbo_dashboard(object):
         app = self._initiate_app(app_name=app_name)
 
         # gather all the layouts into a dict
-        urls_names_and_layouts = self._urls_names_and_layouts(
+        urls_names_and_html = self._urls_names_and_html(
             template=self.template,
         )
 
         # run the callbacks
         self._callbacks(
             app=app,
-            urls_names_and_layouts=urls_names_and_layouts,
+            urls_names_and_html=urls_names_and_html,
         )
 
         # run the server
@@ -117,7 +132,7 @@ class turbo_dashboard(object):
         )
         return app
 
-    def _urls_names_and_layouts(
+    def _urls_names_and_html(
             self,
             template: str,
     ) -> OrderedDict:
@@ -130,14 +145,17 @@ class turbo_dashboard(object):
             OrderedDict: OrderedDict of dicts with url, name, and html info in the order provided
 
             The return value looks like:
-            OrderedDict(
-                {
-                    'url': dashboard_page.url,
-                    'name': dashboard_page.name,
-                    'html': dashboard_page.html(template=template),
-                },
+            OrderedDict([
+                (
+                    dashboard_page.url,
+                    {
+                        'url': dashboard_page.url,
+                        'name': dashboard_page.name,
+                        'html': dashboard_page.html(template=template),
+                    }
+                ),
                 ...
-            )
+            ])
 
             This gives us all the information we need to structure the app and create the layouts callback
 
@@ -146,9 +164,9 @@ class turbo_dashboard(object):
             (  # to create an OrderedDict of
                 page.url,  # page url keys
                 {  # connected to dictionaries with page url, name, html
-                    'url': page.url,
-                    'name': page.name,
-                    'html': page.html(template=template),
+                    self._url_dict_key: page.url,
+                    self._url_name_dict_key: page.name,
+                    self._html_dict_key: page.html(template=template),
                 }
             ) for page in self.dashboard_page_list
         ])
@@ -158,13 +176,13 @@ class turbo_dashboard(object):
     def _layouts_callback(
             self,
             app: dash.Dash,
-            urls_names_and_layouts: OrderedDict,
+            urls_names_and_html: OrderedDict,
     ) -> bool:
-        """run the layout callback
+        """run the layouts callback
 
         Args:
             app (dash.Dash): the dash.Dash app object
-            urls_names_and_layouts (list): the list of urls, names, and layouts we'll use that create each page
+            urls_names_and_html (list): the list of urls, names, and layouts we'll use that create each page
 
         Returns:
             bool: True if successful, raises errors otherwise
@@ -179,30 +197,31 @@ class turbo_dashboard(object):
             ],
         )
         def display_page(pathname: str):
-            for url in urls_names_and_layouts:  # search through the page names in this dict
-                if pathname == '/{}'.format(url):  # for a url matching the pathname in our URL bar
-                    return urls_names_and_layouts[url]['html']  # if we find it, return the html for that url
+            for url in urls_names_and_html:  # search through the page names in this dict
+                if pathname == '{}{}'.format(self._pathname_prefix, url):  # for a url matching the pathname in the url
+                    return urls_names_and_html[url][self._html_dict_key]  # if we find it, return the html for that url
 
-            return urls_names_and_layouts[self._fourohfour_url]['html']  # if we didn't find anything, grab the 404 page
+            # if we didn't find anything, grab the 404 page
+            return urls_names_and_html[self._fourohfour_url][self._html_dict_key]
 
         return True
 
     def _callbacks(
             self,
             app: dash.Dash,
-            urls_names_and_layouts: OrderedDict,
+            urls_names_and_html: OrderedDict,
     ) -> bool:
-        """run the dash callbacks
+        """run the dash callbacks for the layouts and each page
 
         Args:
             app (dash.Dash): the dash.Dash app object
-            urls_names_and_layouts (list): the list of urls, names, and layouts we'll use that create each page
+            urls_names_and_html (list): the list of urls, names, and layouts we'll use that create each page
 
         Returns:
             bool: True if successful, raises errors otherwise
         """
         # layouts callback
-        self._layouts_callback(app=app, urls_names_and_layouts=urls_names_and_layouts)
+        self._layouts_callback(app=app, urls_names_and_html=urls_names_and_html)
 
         # callback for each page
         for page in self.dashboard_page_list:
@@ -215,5 +234,20 @@ class turbo_dashboard(object):
             app: dash.Dash,
             debug: bool,
             is_in_production: bool,
-    ):
-        pass
+    ) -> bool:
+        """run the server
+
+        Args:
+            app (dash.Dash): the dash.Dash app object
+            debug (bool): run the app in debug mode
+            is_in_production: run the app in production
+
+        Returns:
+            bool: True if successful, raises errors otherwise
+        """
+        if is_in_production is True:
+            raise NotImplementedError('Whoops, looks like turbo didn\'t productionize this yet!')
+        else:
+            app.run_server(debug=debug)
+
+        return True
