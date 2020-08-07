@@ -13,7 +13,7 @@ class turbo_dashboard_page(object):
             df: pd.DataFrame = None,
             menu_filter_list: list = None,
             output_list: list = None,
-            prebuilt_template: str = None,
+            prebuilt_page: str = None,
     ):
         """
 
@@ -23,7 +23,7 @@ class turbo_dashboard_page(object):
             df (:obj: `pandas.DataFrame`, optional): default `None`, dataframe for this page
             menu_filter_list (:obj: `list`, optional): default `None`, list of turbo_filter objects
             output_list (:obj: `list`, optional): default `None`, list of turbo_output objects
-            prebuilt_template (:obj: `str`, optional): default `None`, denotes a page that's a prebuilt template
+            prebuilt_page (:obj: `str`, optional): default `None`, denotes a page that's prebuilt for us
                 options include ['homepage', '404']
         """
         self.url = url
@@ -31,4 +31,4 @@ class turbo_dashboard_page(object):
         self.df = df
         self.menu_filter_list = menu_filter_list
         self.output_list = output_list
-        self.prebuilt_template = prebuilt_template
+        self.prebuilt_page = prebuilt_page
