@@ -48,13 +48,15 @@ class turbo_dashboard_page(object):
 
     def html(
             self,
-            template: str,
+            template: str = None,
+            header_html: html.Div = None,
     ) -> html.Div:
         """create the html for this page
 
         Args:
             template (:obj: `str`, optional): layout template we want to use. Options include:
                 ['default', 'turbo', 'turbo-dark']
+            header_html (:obj: `html.Div`, optional): html for the header
 
         Returns:
             dash_html_components.Div
