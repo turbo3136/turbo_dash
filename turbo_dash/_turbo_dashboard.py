@@ -1,3 +1,4 @@
+from typing import List
 from collections import OrderedDict
 import dash
 import dash_core_components as dcc
@@ -12,8 +13,6 @@ class turbo_dashboard(object):
     Methods:
         run_dashboard: create the app, manage the layouts, run the callbacks, start the server.
             Uses each of the protected methods below.
-
-    Protected Methods:
         _initiate_app: initiate the app and layout
         _urls_names_and_html: grab the url, name, and html based on the provided template for every page
         _layouts_callback: run the layouts callback
@@ -25,7 +24,7 @@ class turbo_dashboard(object):
     def __init__(
             self,
             template: str = None,
-            dashboard_page_list: list = None,
+            dashboard_page_list: List[turbo_dashboard_page] = None,
             dashboard_wrapper_div_id: str = 'dashboard_wrapper_div',
     ):
         """create a single or multi-page Plotly Dash dashboard
@@ -33,7 +32,9 @@ class turbo_dashboard(object):
         Args:
             template (:obj: `str`, optional): layout template we want to use. Options include:
                 ['default', 'turbo', 'turbo-dark']
-            dashboard_page_list (:obj: `list`, optional): list of turbo_dashboard_page objects
+            dashboard_page_list (:obj: `List[turbo_dashboard_page]`, optional): list of turbo_dashboard_page objects
+            dashboard_wrapper_div_id (:obj: `str`, optional): default 'dashboard_wrapper_id`, div_id for the
+                dashboard's wrapper
         """
         self.template = template
         self.dashboard_page_list = dashboard_page_list
@@ -137,7 +138,7 @@ class turbo_dashboard(object):
     def _urls_names_and_html(
             self,
             template: str,
-    ) -> OrderedDict:
+    ) -> OrderedDict[str, dict]:
         """grab the url, name, and html based on the provided template for every page
 
         Args:
@@ -178,7 +179,7 @@ class turbo_dashboard(object):
     def _layouts_callback(
             self,
             app: dash.Dash,
-            urls_names_and_html: OrderedDict,
+            urls_names_and_html: OrderedDict[str, dict],
     ) -> bool:
         """run the layouts callback
 
@@ -211,7 +212,7 @@ class turbo_dashboard(object):
     def _callbacks(
             self,
             app: dash.Dash,
-            urls_names_and_html: OrderedDict,
+            urls_names_and_html: OrderedDict[str, dict],
     ) -> bool:
         """run the dash callbacks for the layouts and each page
 
