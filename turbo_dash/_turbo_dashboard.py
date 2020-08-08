@@ -11,9 +11,9 @@ class turbo_dashboard(object):
     """Class that helps us organize information, create a dashboard, and deploy it.
 
     Methods:
-        run_dashboard: create the app, manage the layouts, run the callbacks, start the server.
-            Uses each of the protected methods below.
+        run_dashboard: create the app, manage the layouts, run the callbacks, start the server
         _initiate_app: initiate the app and layout
+        _header_html: create the html we'll use for the header
         _urls_names_and_html: grab the url, name, and html based on the provided template for every page
         _layouts_callback: run the layouts callback
         _callbacks: run the dash callbacks for the layouts and each page
@@ -135,6 +135,23 @@ class turbo_dashboard(object):
         )
         return app
 
+    def _header_html(
+            self,
+            current_page_url: str = None,
+    ) -> html.Div:
+        """create the header for the given page
+
+        Args:
+            current_page_url:
+
+        Returns:
+            dash_html_components.Div
+        """
+        pass  # yeah, i'm gonna need you to write this
+        # gather all the pages in this dashboard, ignore the 404 and homepage
+        # create a logo and add each page's name with a link to the page
+        # do we want to support tabs? maybe add a dropdown of the individual tabs?
+
     def _urls_names_and_html(
             self,
             template: str,
@@ -169,7 +186,10 @@ class turbo_dashboard(object):
                 {  # connected to dictionaries with page url, name, html
                     self._url_dict_key: page.url,
                     self._url_name_dict_key: page.name,
-                    self._html_dict_key: page.html(template=template),
+                    self._html_dict_key: page.html(
+                        template=template,
+                        header_html=self._header_html(current_page_url=page.url),
+                    ),
                 }
             ) for page in self.dashboard_page_list  # iterate over the dashboard page list
         ])
