@@ -1,10 +1,14 @@
+import string
+import random
 from typing import List
+from typing import OrderedDict as ODict
 from collections import OrderedDict
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
 from ._turbo_dashboard_page import turbo_dashboard_page
+from ._lookups import _template_lookup
 
 
 class turbo_dashboard(object):
@@ -20,6 +24,8 @@ class turbo_dashboard(object):
         _run_server: run the server
 
     """
+
+    _template_lookup_dict = _template_lookup
 
     def __init__(
             self,
@@ -38,6 +44,7 @@ class turbo_dashboard(object):
         """
         self.template = template
         self.dashboard_page_list = dashboard_page_list
+        self._original_dashboard_page_list = dashboard_page_list
         self.dashboard_wrapper_div_id = dashboard_wrapper_div_id
 
         # set some internal variables
@@ -55,6 +62,10 @@ class turbo_dashboard(object):
         self._fourohfour_url = '404'
         self._fourohfour_name = '404'
         self._fourohfour_prebuilt_page_name = '404'
+
+        # some layout stuff
+        self._logo_filepath = '/static/turbo_logo.png'
+        self._logo_width = '120px'
 
         # if we're using a template that builds pages for us, like a homepage and 404 page, build and add them
         if self.template in ('turbo', 'turbo-dark'):
@@ -135,27 +146,10 @@ class turbo_dashboard(object):
         )
         return app
 
-    def _header_html(
-            self,
-            current_page_url: str = None,
-    ) -> html.Div:
-        """create the header for the given page
-
-        Args:
-            current_page_url:
-
-        Returns:
-            dash_html_components.Div
-        """
-        pass  # yeah, i'm gonna need you to write this
-        # gather all the pages in this dashboard, ignore the 404 and homepage
-        # create a logo and add each page's name with a link to the page
-        # do we want to support tabs? maybe add a dropdown of the individual tabs?
-
     def _urls_names_and_html(
             self,
             template: str,
-    ) -> OrderedDict[str, dict]:
+    ) -> ODict[str, dict]:
         """grab the url, name, and html based on the provided template for every page
 
         Args:
@@ -199,7 +193,7 @@ class turbo_dashboard(object):
     def _layouts_callback(
             self,
             app: dash.Dash,
-            urls_names_and_html: OrderedDict[str, dict],
+            urls_names_and_html: ODict[str, dict],
     ) -> bool:
         """run the layouts callback
 
@@ -232,7 +226,7 @@ class turbo_dashboard(object):
     def _callbacks(
             self,
             app: dash.Dash,
-            urls_names_and_html: OrderedDict[str, dict],
+            urls_names_and_html: ODict[str, dict],
     ) -> bool:
         """run the dash callbacks for the layouts and each page
 
@@ -274,3 +268,71 @@ class turbo_dashboard(object):
             app.run_server(debug=debug)
 
         return True
+
+    """Beware the depths below. Here lies the real code."""
+    @staticmethod
+    def _generate_random_string(length: int = 16) -> str:
+        return ''.join(
+            [random.choice(string.ascii_lowercase + string.digits) for n in range(length)]
+        )
+
+    def _header_html(
+            self,
+            current_page_url: str = None,
+    ) -> html.Div:
+        """create the header for the given page
+
+        Args:
+            current_page_url: what's the url for the current header so we can set that link's class
+
+        Returns:
+            dash_html_components.Div
+        """
+        # gather all the pages in this dashboard, ignore the 404 and homepage
+        # create a logo and add each page's name with a link to the page
+        # do we want to support tabs? maybe add a dropdown of the individual tabs?
+
+        # 1. create the logo's html
+        logo_html = html.A(
+            id='{} logo - {}'.format(current_page_url, self._generate_random_string()),
+            className=self._template_lookup_dict[self.template]['header_logo_className'],
+            href='/{}'.format(self._homepage_url),
+            children=html.Img(
+                src=self._logo_filepath,
+                width=self._logo_width,
+            )
+        )
+
+        # 2. gather all the pages in this dashboard and create the header links
+        header_page_list = [
+            {self._url_dict_key: page.url, self._url_name_dict_key: page.name}
+            for page in self._original_dashboard_page_list
+        ]
+
+        links_html = html.Div(
+            className=self._template_lookup_dict[self.template]['header_links_className'],
+            children=[
+                dcc.Link(
+                    id='{} header-link - {}'.format(page_dict[self._url_dict_key], self._generate_random_string()),
+                    href=page_dict[self._url_dict_key],
+                    children=[
+                        html.Div(
+                            className=self._template_lookup_dict[self.template][
+                                # if this link is not for the current page, use the regular class
+                                # else use the class for the current link
+                                'header_link_className'
+                                if current_page_url != page_dict[self._url_dict_key]
+                                else 'header_link_current_className'
+                            ],
+                            children=page_dict[self._url_name_dict_key],
+                        ),
+                    ]
+                ) for page_dict in header_page_list
+            ]
+        )
+
+        # return the assembled html
+        return html.Div(
+            className=self._template_lookup_dict[self.template]['header_className'],
+            children=[logo_html, links_html],
+        )
