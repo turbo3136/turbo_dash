@@ -166,7 +166,7 @@ class turbo_dashboard(object):
                     {
                         'url': dashboard_page.url,
                         'name': dashboard_page.name,
-                        'html': dashboard_page.html(template=template),
+                        'html': dashboard_page.create_html(template=template),
                     }
                 ),
                 ...
@@ -181,7 +181,7 @@ class turbo_dashboard(object):
                 {  # connected to dictionaries with page url, name, html
                     self._url_dict_key: page.url,
                     self._url_name_dict_key: page.name,
-                    self._html_dict_key: page.html(
+                    self._html_dict_key: page.create_html(
                         template=template,
                         header_html=self._header_html(current_page_url=page.url),
                     ),
