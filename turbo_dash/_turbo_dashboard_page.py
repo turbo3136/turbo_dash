@@ -15,7 +15,7 @@ class turbo_dashboard_page(object):
     and all the callbacks that make the dashboard run.
 
     Methods:
-        html: create the html for this page
+        create_html: create the html for this page
         callback: create the callback for this page
 
     """
@@ -85,13 +85,19 @@ class turbo_dashboard_page(object):
         # 2
         menu_html = html.Div(
             className=self._template_lookup_dict[template]['menu_className'],
-            children=[menu_filter.html(template=template, df=self.df) for menu_filter in self.menu_filter_list],
+            children=[
+                menu_filter.create_html(
+                    template=template,
+                    df=self.df,
+                    location='menu',
+                ) for menu_filter in self.menu_filter_list
+            ],
         )
 
         # 3
         content_html = html.Div(
             className=self._template_lookup_dict[template]['content_className'],
-            children=[output.html(template=template, df=self.df) for output in self.output_list],
+            children=[output.create_html(template=template, df=self.df) for output in self.output_list],
         )
 
         # 4
