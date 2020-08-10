@@ -64,6 +64,7 @@ class turbo_dashboard(object):
         self._fourohfour_prebuilt_page_name = '404'
 
         # some layout stuff
+        # @todo update this stuff, it should be an argument. We also want an external reference to these options
         self._logo_filepath = '/static/turbo_logo.png'
         self._logo_width = '120px'
 
