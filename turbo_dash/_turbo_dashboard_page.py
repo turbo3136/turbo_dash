@@ -90,6 +90,7 @@ class turbo_dashboard_page(object):
                     template=template,
                     df=self.df,
                     location='menu',
+                    template_lookup_dict=self._template_lookup_dict,
                 ) for menu_filter in self.menu_filter_list
             ],
         )
