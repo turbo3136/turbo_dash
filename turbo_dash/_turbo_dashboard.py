@@ -245,7 +245,7 @@ class turbo_dashboard(object):
 
         # callback for each page
         for page in self.dashboard_page_list:
-            page.callback(app=app)
+            page.callbacks(app=app)
 
         return True
 
