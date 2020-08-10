@@ -1,6 +1,6 @@
 import string
 import random
-from typing import List
+from typing import List, Dict, Union
 from typing import OrderedDict as ODict
 from collections import OrderedDict
 import dash
@@ -149,7 +149,7 @@ class turbo_dashboard(object):
     def _urls_names_and_html(
             self,
             template: str,
-    ) -> ODict[str, dict]:
+    ) -> ODict[str, Dict[str, Union[str, str, html.Div]]]:
         """grab the url, name, and html based on the provided template for every page
 
         Args:
@@ -193,13 +193,14 @@ class turbo_dashboard(object):
     def _layouts_callback(
             self,
             app: dash.Dash,
-            urls_names_and_html: ODict[str, dict],
+            urls_names_and_html: ODict[str, Dict[str, Union[str, str, html.Div]]],
     ) -> bool:
         """run the layouts callback
 
         Args:
             app (dash.Dash): the dash.Dash app object
-            urls_names_and_html (list): the list of urls, names, and layouts we'll use that create each page
+            urls_names_and_html (OrderedDict): an OrderedDict of urls, names, and layouts we'll use
+                that create each page
 
         Returns:
             bool: True if successful, raises errors otherwise
@@ -213,7 +214,7 @@ class turbo_dashboard(object):
                 ),
             ],
         )
-        def display_page(pathname: str):
+        def display_page(pathname: str) -> html.Div:
             for url in urls_names_and_html:  # search through the page names in this dict
                 if pathname == '{}{}'.format(self._pathname_prefix, url):  # for a url matching the pathname in the url
                     return urls_names_and_html[url][self._html_dict_key]  # if we find it, return the html for that url
@@ -226,13 +227,14 @@ class turbo_dashboard(object):
     def _callbacks(
             self,
             app: dash.Dash,
-            urls_names_and_html: ODict[str, dict],
+            urls_names_and_html: ODict[str, Dict[str, Union[str, str, html.Div]]],
     ) -> bool:
         """run the dash callbacks for the layouts and each page
 
         Args:
             app (dash.Dash): the dash.Dash app object
-            urls_names_and_html (list): the list of urls, names, and layouts we'll use that create each page
+            urls_names_and_html (OrderedDict): an OrderedDict of urls, names, and layouts we'll use
+                that create each page
 
         Returns:
             bool: True if successful, raises errors otherwise
