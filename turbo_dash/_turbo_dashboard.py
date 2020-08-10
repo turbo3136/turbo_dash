@@ -9,6 +9,7 @@ import dash_html_components as html
 
 from ._turbo_dashboard_page import turbo_dashboard_page
 from ._lookups import _template_lookup
+from ._helpers import generate_random_string
 
 
 class turbo_dashboard(object):
@@ -273,12 +274,6 @@ class turbo_dashboard(object):
         return True
 
     """Beware the depths below. Here lies the real code."""
-    @staticmethod
-    def _generate_random_string(length: int = 16) -> str:
-        return ''.join(
-            [random.choice(string.ascii_lowercase + string.digits) for n in range(length)]
-        )
-
     def _header_html(
             self,
             current_page_url: str = None,
@@ -297,7 +292,7 @@ class turbo_dashboard(object):
 
         # 1. create the logo's html
         logo_html = html.A(
-            id='{} logo - {}'.format(current_page_url, self._generate_random_string()),
+            id='{} logo - {}'.format(current_page_url, generate_random_string()),
             className=self._template_lookup_dict[self.template]['header_logo_className'],
             href='/{}'.format(self._homepage_url),
             children=html.Img(
@@ -316,7 +311,7 @@ class turbo_dashboard(object):
             className=self._template_lookup_dict[self.template]['header_links_className'],
             children=[
                 dcc.Link(
-                    id='{} header-link - {}'.format(page_dict[self._url_dict_key], self._generate_random_string()),
+                    id='{} header-link - {}'.format(page_dict[self._url_dict_key], generate_random_string()),
                     href=page_dict[self._url_dict_key],
                     children=[
                         html.Div(
