@@ -31,12 +31,7 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
                 turbo_dash.turbo_output(output_type='bar', x='year', y='pop'),
 
                 # line graph of life expectancy vs year with an input to change the y axis to a different column
-                turbo_dash.turbo_output(
-                    output_type='line',
-                    x='year',
-                    y='lifeExp',
-                    input_list=['y'],
-                ),
+                turbo_dash.turbo_output(output_type='line', x='year', y='lifeExp', input_list=['y'],),
             ],
         ),
 
