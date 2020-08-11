@@ -98,7 +98,14 @@ class turbo_dashboard_page(object):
         # 3
         content_html = html.Div(
             className=self._template_lookup_dict[template]['content_className'],
-            children=[output.create_html(template=template, df=self.df) for output in self.output_list],
+            children=[
+                output.create_html(
+                    template=template,
+                    df=self.df,
+                    location='content',
+                    template_lookup_dict=self._template_lookup_dict,
+                ) for output in self.output_list
+            ],
         )
 
         # 4
