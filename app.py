@@ -61,4 +61,4 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
 
 # execute the code
 if __name__ == '__main__':
-    turbo_dashboard.run_dashboard()
+    turbo_dashboard.run_dashboard(app_name=__name__)
