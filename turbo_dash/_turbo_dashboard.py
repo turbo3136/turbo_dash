@@ -31,7 +31,7 @@ class turbo_dashboard(object):
     def __init__(
             self,
             template: str = None,
-            dashboard_page_list: List[turbo_dashboard_page] = None,
+            dashboard_page_list: List[turbo_dashboard_page] = (),
             dashboard_wrapper_div_id: str = 'dashboard_wrapper_div',
     ):
         """create a single or multi-page Plotly Dash dashboard
@@ -45,7 +45,7 @@ class turbo_dashboard(object):
         """
         self.template = template
         self.dashboard_page_list = dashboard_page_list
-        self._original_dashboard_page_list = dashboard_page_list
+        self._original_dashboard_page_list = self.dashboard_page_list[:]  # create a copy of the dashboard page list
         self.dashboard_wrapper_div_id = dashboard_wrapper_div_id
 
         # set some internal variables
@@ -67,7 +67,7 @@ class turbo_dashboard(object):
         # some layout stuff
         # @todo update this stuff, it should be an argument. We also want an external reference to these options
         self._logo_filepath = '/static/turbo_logo.png'
-        self._logo_width = '120px'
+        self._logo_width = '40px'
 
         # if we're using a template that builds pages for us, like a homepage and 404 page, build and add them
         if self.template in ('turbo', 'turbo-dark'):
@@ -85,14 +85,14 @@ class turbo_dashboard(object):
 
     def run_dashboard(
             self,
-            app_name: str = __name__,
+            app_name: str,
             debug: bool = False,
             is_in_production: bool = False,
     ) -> bool:
         """create the app, manage the layouts, run the callbacks, start the server
 
         Args:
-            app_name (:obj: `str`, optional): default `__name__`, the name flask will use for the app
+            app_name (str): the name flask will use for the app, it should usually be set to '__name__'
             debug (:obj: `bool`, optional): default `False`, set flask debug mode
             is_in_production (:obj: `bool`, optional): default `False`, if it's in production, we'll
                 have to do some special stuff with the server
@@ -118,7 +118,7 @@ class turbo_dashboard(object):
         self._run_server(
             app=app,
             debug=debug,
-            is_in_production=is_in_production
+            is_in_production=is_in_production,
         )
 
         return True
@@ -292,9 +292,9 @@ class turbo_dashboard(object):
 
         # 1. create the logo's html
         logo_html = html.A(
-            id='{} logo - {}'.format(current_page_url, generate_random_string()),
+            id='{} logo - {}'.format(self._homepage_url, generate_random_string()),
             className=self._template_lookup_dict[self.template]['header_logo_className'],
-            href='/{}'.format(self._homepage_url),
+            href='{}{}'.format(self._pathname_prefix, self._homepage_url),
             children=html.Img(
                 src=self._logo_filepath,
                 width=self._logo_width,
