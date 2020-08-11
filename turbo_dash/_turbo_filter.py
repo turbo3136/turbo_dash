@@ -15,7 +15,7 @@ class turbo_filter(object):
 
     def __init__(
             self,
-            filter_type: str,
+            filter_type: str = None,
             column: str = None,
             label_column: str = None,
             default_value: Any = None,
@@ -23,7 +23,10 @@ class turbo_filter(object):
         """
 
         Args:
-            filter_type (str): string representing the filter object
+            filter_type (:obj: `str`, optional): string representing the filter object or the
+                string representing the input_filter we'll use to control the output. For example,
+                'x' gives us a Dropdown filter with all the column names in our dataset,
+                'output_type' gives us a Dropdown filter with all the chart types available to us.
             column (:obj: `str`, optional): string representing the column of the dataframe
                 used for the values of this filter
             label_column (:obj: `str`, optional): string representing the column of the dataframe
