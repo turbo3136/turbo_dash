@@ -27,8 +27,8 @@ class turbo_dashboard_page(object):
             url: str = None,
             name: str = None,
             df: pd.DataFrame = None,
-            menu_filter_list: List[turbo_filter] = None,
-            output_list: List[turbo_output] = None,
+            menu_filter_list: List[turbo_filter] = (),
+            output_list: List[turbo_output] = (),
             prebuilt_page: str = None,
     ):
         """Create a Plotly Dash page.
