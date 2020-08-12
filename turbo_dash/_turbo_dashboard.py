@@ -86,6 +86,7 @@ class turbo_dashboard(object):
     def run_dashboard(
             self,
             app_name: str,
+            suppress_callback_exceptions: bool = True,
             debug: bool = False,
             is_in_production: bool = False,
     ) -> bool:
@@ -93,6 +94,9 @@ class turbo_dashboard(object):
 
         Args:
             app_name (str): the name flask will use for the app, it should usually be set to '__name__'
+            suppress_callback_exceptions (:obj: `bool`, optional): default `True`, dash arg for whether to
+                suppress callback exceptions when dash is creating the callback map. Must be `True` for
+                multi-page dashboards.
             debug (:obj: `bool`, optional): default `False`, set flask debug mode
             is_in_production (:obj: `bool`, optional): default `False`, if it's in production, we'll
                 have to do some special stuff with the server
@@ -101,7 +105,7 @@ class turbo_dashboard(object):
             bool: True if successful
         """
         # create the app and initiate everything (layout, )
-        app = self._initiate_app(app_name=app_name)
+        app = self._initiate_app(app_name=app_name, suppress_callback_exceptions=suppress_callback_exceptions)
 
         # gather all the layouts into an OrderedDict of dicts
         urls_names_and_html = self._urls_names_and_html(
@@ -126,17 +130,24 @@ class turbo_dashboard(object):
     def _initiate_app(
             self,
             app_name: str,
+            suppress_callback_exceptions: bool,
     ) -> dash.Dash:
         """initiate the app and layout
 
         Args:
             app_name (str): name we'll use for the app
+            suppress_callback_exceptions (:obj: `bool`, optional): default `True`, dash arg for whether to
+                suppress callback exceptions when dash is creating the callback map. Must be `True` for
+                multi-page dashboards.
 
         Returns:
             dash.Dash: the app object
         """
         # create the app
         app = dash.Dash(name=app_name)
+
+        # suppress callback exceptions
+        app.config.suppress_callback_exceptions = suppress_callback_exceptions
 
         # initiate the layout
         #    we need an empty Div that our callbacks will update based on the Location i.e. url

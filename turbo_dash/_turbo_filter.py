@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from ._helpers import generate_random_string
-from ._lookups import _filter_type_lookup, _list_of_chart_strings
+from ._lookups import _filter_type_lookup, _chart_input_to_filter_type_lookup, _list_of_chart_strings
 
 
 class turbo_filter(object):
@@ -16,6 +16,7 @@ class turbo_filter(object):
     """
 
     _filter_type_lookup_dict = _filter_type_lookup
+    _chart_input_to_filter_type_lookup_dict = _chart_input_to_filter_type_lookup
 
     def __init__(
             self,
@@ -40,7 +41,9 @@ class turbo_filter(object):
                 used for the labels of this filter
             default_value (:obj: `Any`, optional): default value for this filter
         """
-        self.filter_type = filter_type
+        # if we provided a chart_input_filter_type, that overrides the filter type
+        self.filter_type = filter_type if chart_input_filter_type is None else \
+            self._chart_input_to_filter_type_lookup_dict[chart_input_filter_type]
         self.chart_input_filter_type = chart_input_filter_type
         self.column = column
         self.label_column = label_column if label_column is not None else self.column

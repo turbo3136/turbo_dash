@@ -101,6 +101,14 @@ _filter_type_lookup = {
 
 }
 
+"""filter type from chart input type"""
+_chart_input_to_filter_type_lookup = {
+    'output_type': 'Dropdown',
+    'x': 'Dropdown',
+    'y': 'Dropdown',
+    'z': 'Dropdown',
+}
+
 """plotly objects"""
 _chart_lookup_dict = OrderedDict([
     (

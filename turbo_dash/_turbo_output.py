@@ -155,7 +155,7 @@ class turbo_output(object):
     def _create_chart_input_turbo_filter_list_from_chart_input_list(self) -> List[turbo_filter]:
         return [
             turbo_filter(
-                filter_type=chart_input_string,
+                chart_input_filter_type=chart_input_string,
                 default_value=self._get_default_value_from_chart_input_string(chart_input_string=chart_input_string),
             ) for chart_input_string in self.chart_input_list
         ]
