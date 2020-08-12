@@ -73,21 +73,21 @@ _filter_type_lookup = {
     'Dropdown': {
         'input_property_list': ['value'],
         'lambda_function_list': [
-            lambda dataframe, column, value: dataframe[dataframe[column] == value]
+            lambda dataframe, column, value: dataframe[dataframe[column] == value] if value else dataframe,
         ],
     },
 
     'Dropdown-multi': {
         'input_property_list': ['value'],
         'lambda_function_list': [
-            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)]
+            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)] if value else dataframe,
         ],
     },
 
     'Checklist': {
         'input_property_list': ['value'],
         'lambda_function_list': [
-            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)]
+            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)] if value else dataframe,
         ],
     },
 
@@ -95,7 +95,7 @@ _filter_type_lookup = {
         'input_property_list': ['value'],
         'lambda_function_list': [
             lambda dataframe, column, value:
-            dataframe[(dataframe[column] >= value[0]) & (dataframe[column] <= value[1])]
+            dataframe[(dataframe[column] >= value[0]) & (dataframe[column] <= value[1])],
         ],
     },
 
