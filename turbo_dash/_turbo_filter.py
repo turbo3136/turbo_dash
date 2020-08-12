@@ -20,7 +20,7 @@ class turbo_filter(object):
     def __init__(
             self,
             filter_type: str = None,
-            input_filter_type: str = None,
+            chart_input_filter_type: str = None,
             column: str = None,
             label_column: str = None,
             default_value: Any = None,
@@ -29,8 +29,8 @@ class turbo_filter(object):
 
         Args:
             filter_type (:obj: `str`, optional): string representing the filter object. If filter_type
-                is None, input_filter_type must be provided.
-            input_filter_type (:obj: `str`, optional): string representing the input_filter we'll
+                is None, chart_input_filter_type must be provided.
+            chart_input_filter_type (:obj: `str`, optional): string representing the chart_input_filter we'll
                 use to control the output. For example,
                 'x' gives us a Dropdown filter with all the column names in our dataset,
                 'output_type' gives us a Dropdown filter with all the chart types available to us.
@@ -41,7 +41,7 @@ class turbo_filter(object):
             default_value (:obj: `Any`, optional): default value for this filter
         """
         self.filter_type = filter_type
-        self.input_filter_type = input_filter_type
+        self.chart_input_filter_type = chart_input_filter_type
         self.column = column
         self.label_column = label_column if label_column is not None else self.column
         self.default_value = default_value
@@ -89,7 +89,7 @@ class turbo_filter(object):
         filter_class_name = template_lookup_dict[template][filter_class_name_lookup]
 
         # now we dive into specific filters
-        if self.input_filter_type is None:  # if this isn't for an input filter, grab the html for a normal filter
+        if self.chart_input_filter_type is None:  # if this isn't for an input filter, grab the html for a normal filter
             return self._assemble_html_for_filter(
                 df=df,
                 wrapper_class_name=wrapper_class_name,
@@ -97,7 +97,7 @@ class turbo_filter(object):
                 filter_class_name=filter_class_name,
             )
         else:  # if this is for an input filter, grab the html for an input filter
-            return self._assemble_html_for_input_filter(
+            return self._assemble_html_for_chart_input_filter(
                 df=df,
                 wrapper_class_name=wrapper_class_name,
                 label_class_name=label_class_name,
@@ -226,7 +226,7 @@ class turbo_filter(object):
                 .format(self.filter_type, __file__)
             )
 
-    def _assemble_html_for_input_filter(
+    def _assemble_html_for_chart_input_filter(
             self,
             df: pd.DataFrame,
             wrapper_class_name: str,
@@ -244,8 +244,8 @@ class turbo_filter(object):
         Returns:
             html.Div
         """
-        if self.input_filter_type in ('x', 'y', 'z'):
-            # for these input_filter_types we want a list of columns as the filter options
+        if self.chart_input_filter_type in ('x', 'y', 'z'):
+            # for these chart_input_filter_types we want a list of columns as the filter options
             filter_options = [{'label': col, 'value': col} for col in df.columns.values]
 
             return html.Div(
@@ -266,8 +266,8 @@ class turbo_filter(object):
                 ],
             )
 
-        if self.input_filter_type == 'output_type':
-            # for this input_filter_type we want to grab a list of all supported chart options
+        if self.chart_input_filter_type == 'output_type':
+            # for this chart_input_filter_type we want to grab a list of all supported chart options
             filter_options = [{'label': chart_string, 'value': chart_string} for chart_string in _list_of_chart_strings]
 
             return html.Div(
@@ -291,6 +291,6 @@ class turbo_filter(object):
         # who are you? who who, who who
         else:
             raise ValueError(
-                """I don't know what to do with a "{}" input_filter_type. Please add it to {}."""
-                .format(self.input_filter_type, __file__)
+                """I don't know what to do with a "{}" chart_input_filter_type. Please add it to {}."""
+                .format(self.chart_input_filter_type, __file__)
             )
