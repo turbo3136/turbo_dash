@@ -51,6 +51,9 @@ class turbo_filter(object):
         self.persistence = True  # todo: do we want to allow different values for persistence and persistence_type?
         self.persistence_type = 'memory'
 
+        self._filter_input_property_list = self._filter_type_lookup_dict[self.filter_type]['input_property_list']
+        self.filter_input_lambda_function_list = self._filter_type_lookup_dict[self.filter_type]['lambda_function_list']
+
         # assemble the dash dependencies input list, this is an important part
         self.dash_dependencies_input_list = [  # comprehend the list of dash.dependencies.Input
             dash.dependencies.Input(component_id=self.component_id, component_property=input_property)
@@ -105,14 +108,6 @@ class turbo_filter(object):
             )
 
     """protected methods"""
-    @property
-    def _filter_input_property_list(self):
-        return self._filter_type_lookup_dict[self.filter_type]['input_property_list']
-
-    @property
-    def _filter_input_lambda_function_list(self):
-        return self._filter_type_lookup_dict[self.filter_type]['lambda_function_list']
-
     def _assemble_html_for_filter(
             self,
             df: pd.DataFrame,
