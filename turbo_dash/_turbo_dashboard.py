@@ -57,7 +57,7 @@ class turbo_dashboard(object):
         self._url_component_property = 'pathname'  # Dash component property for the url
 
         # prebuilt page info
-        self._homepage_url = ''
+        self._homepage_url = '/'
         self._homepage_name = 'homepage'
         self._homepage_prebuilt_page_name = 'homepage'
         self._fourohfour_url = '404'
@@ -67,7 +67,7 @@ class turbo_dashboard(object):
         # some layout stuff
         # @todo update this stuff, it should be an argument. We also want an external reference to these options
         self._logo_filepath = '/static/turbo_logo.png'
-        self._logo_width = '40px'
+        self._logo_width = '36px'
 
         # if we're using a template that builds pages for us, like a homepage and 404 page, build and add them
         if self.template in ('turbo', 'turbo-dark'):
@@ -229,7 +229,7 @@ class turbo_dashboard(object):
         )
         def display_page(pathname: str) -> html.Div:
             for url in urls_names_and_html:  # search through the page names in this dict
-                if pathname == '{}{}'.format(self._pathname_prefix, url):  # for a url matching the pathname in the url
+                if pathname == '{}'.format(url):  # for a url matching the pathname in the url
                     return urls_names_and_html[url][self._html_dict_key]  # if we find it, return the html for that url
 
             # if we didn't find anything, grab the 404 page
@@ -257,7 +257,7 @@ class turbo_dashboard(object):
 
         # callback for each page
         for page in self.dashboard_page_list:
-            page.callbacks(app=app)
+            page.callbacks(app=app, template=self.template)
 
         return True
 
@@ -305,7 +305,7 @@ class turbo_dashboard(object):
         logo_html = html.A(
             id='{} logo - {}'.format(self._homepage_url, generate_random_string()),
             className=self._template_lookup_dict[self.template]['header_logo_className'],
-            href='{}{}'.format(self._pathname_prefix, self._homepage_url),
+            href='{}'.format(self._homepage_url),
             children=html.Img(
                 src=self._logo_filepath,
                 width=self._logo_width,

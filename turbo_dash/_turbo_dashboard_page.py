@@ -118,11 +118,14 @@ class turbo_dashboard_page(object):
     def callbacks(
             self,
             app: dash.Dash,
+            template: str,
     ) -> bool:
         """run all the callbacks for this page
 
         Args:
             app (dash.Dash): the dash.Dash app object
+            template (:obj: `str`, optional): layout template we want to use. Options include:
+                ['default', 'turbo', 'turbo-dark']
 
         Returns:
             bool: True if successful, raises errors otherwise
@@ -132,6 +135,7 @@ class turbo_dashboard_page(object):
                 app=app,
                 df=self.df,
                 menu_filter_list=self.menu_filter_list,
+                template=template,
             )
 
         return True

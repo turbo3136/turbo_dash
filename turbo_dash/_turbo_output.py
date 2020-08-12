@@ -325,7 +325,7 @@ class turbo_output(object):
                 data_frame=df,
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
-                template=self._template_lookup_dict(template=template)['chart_template'],
+                template=self._template_lookup_dict[template]['chart_template'],
             )
 
         if figure_values_dict['output_type'] == 'line':
@@ -333,7 +333,7 @@ class turbo_output(object):
                 data_frame=df,
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
-                template=self._template_lookup_dict(template=template)['chart_template'],
+                template=self._template_lookup_dict[template]['chart_template'],
             )
 
         # who are you? who who, who who
