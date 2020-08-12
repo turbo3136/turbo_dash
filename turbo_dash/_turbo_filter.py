@@ -109,6 +109,10 @@ class turbo_filter(object):
     def _filter_input_property_list(self):
         return self._filter_type_lookup_dict[self.filter_type]['input_property_list']
 
+    @property
+    def _filter_input_lambda_function_list(self):
+        return self._filter_type_lookup_dict[self.filter_type]['lambda_function_list']
+
     def _assemble_html_for_filter(
             self,
             df: pd.DataFrame,
