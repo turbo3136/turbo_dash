@@ -4,6 +4,8 @@ import plotly.express as px
 """templates"""
 _template_lookup = {
     'turbo': {
+        # chart template
+        'chart_template': 'seaborn',
 
         # header
         'header_className': 'header',
@@ -34,6 +36,8 @@ _template_lookup = {
     },
 
     'turbo-dark': {
+        # chart template
+        'chart_template': 'plotly_dark',
 
         # header
         'header_className': 'header-dark',
@@ -53,9 +57,13 @@ _template_lookup = {
 
         # content
         'content_className': 'content-dark',
+        'content_output_and_filter_wrapper_className': 'content-output-and-filter-wrapper-dark',
         'content_filter_wrapper_className': 'content-filter-wrapper-dark',
         'content_filter_label_className': 'content-filter-label-dark',
         'content_filter_className': 'content-filter-dark',
+        'content_output_wrapper_className': 'content-output-wrapper-dark',
+        'content_output_label_className': 'content-output-label-dark',
+        'content_output_className': 'content-output-dark',
 
     },
 }
