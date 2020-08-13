@@ -41,8 +41,12 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
             <td>grey</td>
         </tr>
         <tr>
-            <td>3. `turbo_dash` doesn't break, as measured by:</td>
+            <td rowspan="2">3. `turbo_dash` doesn't break, as measured by:</td>
             <td>i. comprehensive test suite</td>
+            <td>grey</td>
+        </tr>
+        <tr>
+            <td>ii. full type-hinting with no errors shown by `mypy`</td>
             <td>grey</td>
         </tr>
     </tbody>
