@@ -30,6 +30,7 @@ class turbo_dashboard_page(object):
             menu_filter_list: List[turbo_filter] = (),
             output_list: List[turbo_output] = (),
             prebuilt_page: str = None,
+            prebuilt_page_img_url: str = None,
     ):
         """Create a Plotly Dash page.
 
@@ -41,6 +42,8 @@ class turbo_dashboard_page(object):
             output_list (:obj: `list`, optional): default `None`, list of turbo_output objects
             prebuilt_page (:obj: `str`, optional): default `None`, denotes a page that's prebuilt for us
                 options include ['homepage', '404']
+            prebuilt_page_img_url (:obj: `str`, optional): default `None`, provides the source url for the image
+                we'll use on the prebuilt page
         """
         self.url = url
         self.name = name
@@ -48,11 +51,7 @@ class turbo_dashboard_page(object):
         self.menu_filter_list = menu_filter_list
         self.output_list = output_list
         self.prebuilt_page = prebuilt_page
-
-        # prebuilt page data
-        # @todo: we'll want to allow the user to access this. It should also have an external source
-        self._homepage_img_filepath = '/static/xkcd_homepage.png'
-        self._fourohfour_img_filepath = '/static/xkcd_fourohfour.png'
+        self.prebuilt_page_img_url = prebuilt_page_img_url
 
     def create_html(
             self,
@@ -157,26 +156,14 @@ class turbo_dashboard_page(object):
         Returns:
             html.Div
         """
-        if prebuilt_page == 'homepage':
+        if prebuilt_page in ('homepage', '404'):
             return html.Div(
                 children=[
                     header_html,
                     html.Div(
                         className=self._template_lookup_dict[template]['menu_and_content_className'],
                         style={'text-align': 'center', 'display': 'block'},
-                        children=html.Img(src=self._homepage_img_filepath),
-                    ),
-                ],
-            )
-
-        elif prebuilt_page == '404':
-            return html.Div(
-                children=[
-                    header_html,
-                    html.Div(
-                        className=self._template_lookup_dict[template]['menu_and_content_className'],
-                        style={'text-align': 'center', 'display': 'block'},
-                        children=html.Img(src=self._fourohfour_img_filepath),
+                        children=html.Img(src=self.prebuilt_page_img_url),
                     ),
                 ],
             )

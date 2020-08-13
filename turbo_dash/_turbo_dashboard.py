@@ -1,7 +1,4 @@
-import string
-import random
-from typing import List, Dict, Union
-from typing import OrderedDict as ODict
+from typing import List, Dict, OrderedDict as ODict, Union, Tuple
 from collections import OrderedDict
 import dash
 import dash_core_components as dcc
@@ -33,6 +30,12 @@ class turbo_dashboard(object):
             template: str = None,
             dashboard_page_list: List[turbo_dashboard_page] = (),
             dashboard_wrapper_div_id: str = 'dashboard_wrapper_div',
+            logo_img_url: str = 'https://raw.githubusercontent.com/turbo3136/turbo_dash/feature/turbo3136/red_wedding/static/turbo_logo.png',
+            homepage_img_url: str = 'https://imgs.xkcd.com/comics/launch_risk.png',
+            fourohfour_img_url: str = 'https://imgs.xkcd.com/comics/not_available.png',
+            external_stylesheets_tuple: Tuple[str, ...] = (
+                    'https://codepen.io/turbo3136/pen/BaKjLoL.css',  # stylesheet for 'turbo' template
+            ),
     ):
         """create a single or multi-page Plotly Dash dashboard
 
@@ -42,11 +45,24 @@ class turbo_dashboard(object):
             dashboard_page_list (:obj: `List[turbo_dashboard_page]`, optional): list of turbo_dashboard_page objects
             dashboard_wrapper_div_id (:obj: `str`, optional): default 'dashboard_wrapper_id`, div_id for the
                 dashboard's wrapper
+            logo_img_url (:obj: `str`, optional): url to use for the logo in the header,
+                any public url should work
+            homepage_img_url (:obj: `str`, optional): url to use for the img on the homepage,
+                any public url should work
+            fourohfour_img_url (:obj: `str`, optional): url to use for the img on the 404 page,
+                any public url should work
+            external_stylesheets_tuple (:obj: `Tuple[str, ...]`, optional): urls pointing to external CSS sources,
+                github doesn't seem to work for some reason
         """
         self.template = template
         self.dashboard_page_list = dashboard_page_list
         self._original_dashboard_page_list = self.dashboard_page_list[:]  # create a copy of the dashboard page list
         self.dashboard_wrapper_div_id = dashboard_wrapper_div_id
+        self.logo_img_url = logo_img_url
+        self.homepage_img_url = homepage_img_url
+        self.fourohfour_img_url = fourohfour_img_url
+        self.external_stylesheets_tuple = external_stylesheets_tuple
+        self.external_stylesheets = list(self.external_stylesheets_tuple)
 
         # set some internal variables
         self._pathname_prefix = '/'  # prefix we need for Dash's pathname property
@@ -75,11 +91,13 @@ class turbo_dashboard(object):
                 url=self._homepage_url,
                 name=self._homepage_name,
                 prebuilt_page=self._homepage_prebuilt_page_name,
+                prebuilt_page_img_url=self.homepage_img_url,
             )
             self._fourohfour_page = turbo_dashboard_page(
                 url=self._fourohfour_url,
                 name=self._fourohfour_name,
                 prebuilt_page=self._fourohfour_prebuilt_page_name,
+                prebuilt_page_img_url=self.fourohfour_img_url,
             )
             self.dashboard_page_list.extend([self._homepage, self._fourohfour_page])  # add them to the dashboard list
 
@@ -144,10 +162,11 @@ class turbo_dashboard(object):
             dash.Dash: the app object
         """
         # create the app
-        app = dash.Dash(name=app_name)
-
-        # suppress callback exceptions
-        app.config.suppress_callback_exceptions = suppress_callback_exceptions
+        app = dash.Dash(
+            name=app_name,
+            suppress_callback_exceptions=suppress_callback_exceptions,
+            external_stylesheets=self.external_stylesheets,
+        )
 
         # initiate the layout
         #    we need an empty Div that our callbacks will update based on the Location i.e. url
@@ -307,7 +326,7 @@ class turbo_dashboard(object):
             className=self._template_lookup_dict[self.template]['header_logo_className'],
             href='{}'.format(self._homepage_url),
             children=html.Img(
-                src=self._logo_filepath,
+                src=self.logo_img_url,
                 width=self._logo_width,
             )
         )
