@@ -23,11 +23,12 @@ def _get_df(df_name: str) -> pd.DataFrame:
         pandas.DataFrame
     """
     import os
-    from config import DATASETS_DIR
 
     return pd.read_csv(
-        os.path.join(
-            DATASETS_DIR,
-            '{}.csv.gz'.format(df_name),
+        os.path.join(  # get the path to the dataset by
+            os.path.dirname(os.path.dirname(__file__)),  # finding the dirname for this file (i.e. the turbo_dash dir)
+            'package_data',  # move into package_data/
+            'datasets',  # then into datasets/
+            '{}.csv.gz'.format(df_name),  # finally grab the .csv.gz we're looking for
         )
     )
