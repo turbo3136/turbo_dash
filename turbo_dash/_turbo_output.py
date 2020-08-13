@@ -95,7 +95,7 @@ class turbo_output(object):
         )]
 
         return html.Div(
-            className=wrapper_class_name,
+            className=template_lookup_dict[template][wrapper_class_name],
             children=input_turbo_filter_html_list + output_html_list,
         )
 
