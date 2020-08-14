@@ -34,6 +34,7 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
                     y='pop',
                     color='continent',
                     hover_name='country',
+                    output_name='Population over time',
                 ),
 
                 # line graph of life expectancy vs year with an input to change the y axis to a different column

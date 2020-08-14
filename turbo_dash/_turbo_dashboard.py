@@ -260,8 +260,11 @@ class turbo_dashboard(object):
                 if pathname == '{}'.format(url):  # for a url matching the pathname in the url
                     return urls_names_and_html[url][self._html_dict_key]  # if we find it, return the html for that url
 
-            # if we didn't find anything, grab the 404 page
-            return urls_names_and_html[self._fourohfour_url][self._html_dict_key]
+            # if we didn't find anything, grab the 404 page if there is one, otherwise return an empty Div
+            if urls_names_and_html.get(self._fourohfour_url):
+                return urls_names_and_html[self._fourohfour_url][self._html_dict_key]
+            else:
+                return html.Div(children='404 - Make sure your browser\'s url matches one of the page urls')
 
         return True
 

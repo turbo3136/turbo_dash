@@ -35,6 +35,7 @@ class turbo_output(object):
             projection: str = None,
             chart_input_list: List[str] = (),
             output_component_property: str = 'figure',
+            output_name: str = None,
     ):
         """
 
@@ -55,6 +56,7 @@ class turbo_output(object):
             output_component_property (:obj: `str`, optional): default `'figure'`, the property of the
                 output we want the callback to update. Generally, we want the inputs to update the
                 'figure' property of our dcc.Graph object.
+            output_name (:obj: `str`, optional): default `None`, the name we'll display for this output
         """
         self.output_type = output_type
         self.x = x
@@ -69,6 +71,7 @@ class turbo_output(object):
         self.projection = projection
         self.chart_input_list = chart_input_list
         self.output_component_property = output_component_property
+        self.output_name = output_name
 
         # create a dictionary so we know which input string corresponds to which instance variable
         self._chart_input_string_default_value_dict = {
@@ -161,7 +164,9 @@ class turbo_output(object):
             # 2
             df_filter_start_index = 0  # we can assume the dataframe filter values start at 0
             # and there are len([list of lambda functions]) values to filter on
-            df_filter_stop_index = len([func for tf in menu_filter_list for func in tf.filter_input_lambda_function_list])
+            df_filter_stop_index = len(
+                [func for tf in menu_filter_list for func in tf.filter_input_lambda_function_list]
+            )
             filtered_df = self._filter_dataframe_from_turbo_filter_list(
                 df=filtered_df,
                 filter_column_list=self._filter_column_list(menu_filter_list=menu_filter_list),
@@ -212,7 +217,7 @@ class turbo_output(object):
             children=[
                 html.Div(
                     className=template_lookup_dict[template][label_class_name],
-                    children='Ahoy hoy!',  # todo: yeah, this needs to be a real label
+                    children=self.output_name,
                 ),
                 html.Div(
                     className=template_lookup_dict[template][output_class_name],
@@ -449,4 +454,3 @@ class turbo_output(object):
                 """I don't know what to do with a "{}" output_type. Please add it to {}."""
                 .format(figure_values_dict['output_type'], __file__)
             )
-
