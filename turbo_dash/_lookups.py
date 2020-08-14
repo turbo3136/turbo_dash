@@ -70,6 +70,28 @@ _template_lookup = {
 
 """filters"""
 _filter_type_lookup = {
+    'Checklist': {
+        'input_property_list': ['value'],
+        'lambda_function_list': [
+            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)] if value else dataframe,
+        ],
+    },
+
+    'DatePickerRange': {
+        'input_property_list': ['start_date', 'end_date'],
+        'lambda_function_list': [
+            lambda dataframe, column, value: dataframe[dataframe[column] >= value] if value else dataframe,  # start
+            lambda dataframe, column, value: dataframe[dataframe[column] <= value] if value else dataframe,  # end
+        ],
+    },
+
+    'DatePickerSingle': {
+        'input_property_list': ['date'],
+        'lambda_function_list': [
+            lambda dataframe, column, value: dataframe[dataframe[column] == value] if value else dataframe,
+        ],
+    },
+
     'Dropdown': {
         'input_property_list': ['value'],
         'lambda_function_list': [
@@ -84,10 +106,10 @@ _filter_type_lookup = {
         ],
     },
 
-    'Checklist': {
+    'RadioItems': {
         'input_property_list': ['value'],
         'lambda_function_list': [
-            lambda dataframe, column, value: dataframe[dataframe[column].isin(value)] if value else dataframe,
+            lambda dataframe, column, value: dataframe[dataframe[column] == value] if value else dataframe,
         ],
     },
 
@@ -99,14 +121,23 @@ _filter_type_lookup = {
         ],
     },
 
+    'Slider': {
+        'input_property_list': ['value'],
+        'lambda_function_list': [
+            lambda dataframe, column, value: dataframe[dataframe[column] == value] if value else dataframe,
+        ],
+    },
+
 }
 
 """filter type from chart input type"""
 _chart_input_to_filter_type_lookup = {
     'output_type': 'Dropdown',
     'x': 'Dropdown',
-    'y': 'Dropdown',
+    'y': 'Dropdown-multi',
     'z': 'Dropdown',
+    'color': 'Dropdown',
+    'size': 'Dropdown',
 }
 
 """plotly objects"""

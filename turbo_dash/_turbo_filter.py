@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List, Union
 import pandas as pd
 import dash
 import dash_core_components as dcc
@@ -129,34 +129,6 @@ class turbo_filter(object):
         Returns:
             html.Div
         """
-        if self.filter_type == 'Dropdown':
-            # if it's a Dropdown, we'll create a list of dicts that look like {'label': label, 'value': value}
-            filter_options = [
-                # groupby objects are cool, they create a list of grouped values and their dfs
-                # since we're grouping by both label and value, we get a tuple returned with the df
-                # note that we don't use the df
-                {'label': label_value_tuple[0], 'value': label_value_tuple[1]}
-                for label_value_tuple, label_value_df in df.groupby([self.label_column, self.column])
-            ]
-
-            return html.Div(
-                className=wrapper_class_name,
-                children=[
-                    html.Div(
-                        className=label_class_name,
-                        children=self.label_column,
-                    ),
-                    dcc.Dropdown(
-                        id=self.component_id,
-                        className=filter_class_name,
-                        options=filter_options,
-                        value=self.default_value,
-                        persistence=self.persistence,
-                        persistence_type=self.persistence_type,
-                    ),
-                ],
-            )
-
         if self.filter_type == 'Checklist':
             # if it's a Checklist, we'll create a list of dicts that look like {'label': label, 'value': value}
             filter_options = [
@@ -171,22 +143,86 @@ class turbo_filter(object):
             if self.default_value is None:
                 self.default_value = []
 
-            return html.Div(
-                className=wrapper_class_name,
-                children=[
-                    html.Div(
-                        className=label_class_name,
-                        children=self.label_column,
-                    ),
-                    dcc.Checklist(
-                        id=self.component_id,
-                        className=filter_class_name,
-                        options=filter_options,
-                        value=self.default_value,
-                        persistence=self.persistence,
-                        persistence_type=self.persistence_type,
-                    ),
-                ],
+            return self._assemble_checklist_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'DatePickerRange':
+            minimum = df[self.column].min()
+            maximum = df[self.column].max()
+
+            return self._assemble_datepickerrange_html(
+                minimum=minimum,
+                maximum=maximum,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'DatePickerSingle':
+            minimum = df[self.column].min()
+            maximum = df[self.column].max()
+
+            return self._assemble_datepickerrange_html(
+                minimum=minimum,
+                maximum=maximum,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'Dropdown':
+            # if it's a Dropdown, we'll create a list of dicts that look like {'label': label, 'value': value}
+            filter_options = [
+                # groupby objects are cool, they create a list of grouped values and their dfs
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                # note that we don't use the df
+                {'label': label_value_tuple[0], 'value': label_value_tuple[1]}
+                for label_value_tuple, label_value_df in df.groupby([self.label_column, self.column])
+            ]
+
+            return self._assemble_dropdown_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'Dropdown-multi':
+            # if it's a Dropdown, we'll create a list of dicts that look like {'label': label, 'value': value}
+            filter_options = [
+                # groupby objects are cool, they create a list of grouped values and their dfs
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                # note that we don't use the df
+                {'label': label_value_tuple[0], 'value': label_value_tuple[1]}
+                for label_value_tuple, label_value_df in df.groupby([self.label_column, self.column])
+            ]
+
+            return self._assemble_dropdown_multi_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'RadioItems':
+            # if it's a RadioItem, we'll create a list of dicts that look like {'label': label, 'value': value}
+            filter_options = [
+                # groupby objects are cool, they create a list of grouped values and their dfs
+                # since we're grouping by both label and value, we get a tuple returned with the df
+                # note that we don't use the df
+                {'label': label_value_tuple[0], 'value': label_value_tuple[1]}
+                for label_value_tuple, label_value_df in df.groupby([self.label_column, self.column])
+            ]
+
+            return self._assemble_radioitems_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
             )
 
         if self.filter_type == 'RangeSlider':
@@ -196,25 +232,29 @@ class turbo_filter(object):
             # todo: support different columns for labels and values
             marks = {str(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
 
-            return html.Div(
-                className=wrapper_class_name,
-                children=[
-                    html.Div(
-                        className=label_class_name,
-                        children=self.label_column,
-                    ),
-                    dcc.RangeSlider(
-                        id=self.component_id,
-                        className=filter_class_name,
-                        min=minimum,
-                        max=maximum,
-                        value=self.default_value if self.default_value is not None else [minimum, maximum],
-                        marks=marks,
-                        step=None,
-                        persistence=self.persistence,
-                        persistence_type=self.persistence_type,
-                    ),
-                ],
+            return self._assemble_rangeslider_html(
+                minimum=minimum,
+                maximum=maximum,
+                marks=marks,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.filter_type == 'Slider':
+            values = sorted(df[self.column].unique())  # grab the values in order
+            minimum = min(values)
+            maximum = max(values)
+            # todo: support different columns for labels and values
+            marks = {str(val): {'label': str(val), 'style': {'transform': 'rotate(45deg)'}} for val in values}
+
+            return self._assemble_slider_html(
+                minimum=minimum,
+                maximum=maximum,
+                marks=marks,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
             )
 
         # who are you? who who, who who
@@ -242,48 +282,35 @@ class turbo_filter(object):
         Returns:
             html.Div
         """
-        if self.chart_input_filter_type in ('x', 'y', 'z'):
+        if self.chart_input_filter_type in ('x', 'y', 'z', 'color', 'size'):
             # for these chart_input_filter_types we want a list of columns as the filter options
             filter_options = [{'label': col, 'value': col} for col in df.columns.values]
 
-            return html.Div(
-                className=wrapper_class_name,
-                children=[
-                    html.Div(
-                        className=label_class_name,
-                        children=self.label_column,
-                    ),
-                    dcc.Dropdown(
-                        id=self.component_id,
-                        className=filter_class_name,
-                        options=filter_options,
-                        value=self.default_value,
-                        persistence=self.persistence,
-                        persistence_type=self.persistence_type,
-                    ),
-                ],
-            )
+            if self.filter_type == 'Dropdown':
+                return self._assemble_dropdown_html(
+                    filter_options=filter_options,
+                    wrapper_class_name=wrapper_class_name,
+                    label_class_name=label_class_name,
+                    filter_class_name=filter_class_name,
+                )
+
+            if self.filter_type == 'Dropdown-multi':
+                return self._assemble_dropdown_multi_html(
+                    filter_options=filter_options,
+                    wrapper_class_name=wrapper_class_name,
+                    label_class_name=label_class_name,
+                    filter_class_name=filter_class_name,
+                )
 
         if self.chart_input_filter_type == 'output_type':
             # for this chart_input_filter_type we want to grab a list of all supported chart options
             filter_options = [{'label': chart_string, 'value': chart_string} for chart_string in _list_of_chart_strings]
 
-            return html.Div(
-                className=wrapper_class_name,
-                children=[
-                    html.Div(
-                        className=label_class_name,
-                        children=self.label_column,
-                    ),
-                    dcc.Dropdown(
-                        id=self.component_id,
-                        className=filter_class_name,
-                        options=filter_options,
-                        value=self.default_value,
-                        persistence=self.persistence,
-                        persistence_type=self.persistence_type,
-                    ),
-                ],
+            return self._assemble_dropdown_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
             )
 
         # who are you? who who, who who
@@ -292,3 +319,222 @@ class turbo_filter(object):
                 """I don't know what to do with a "{}" chart_input_filter_type. Please add it to {}."""
                 .format(self.chart_input_filter_type, __file__)
             )
+
+    """filter assembly line"""
+    def _assemble_checklist_html(
+            self,
+            filter_options: List[Dict[str, str]] = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.Checklist(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    options=filter_options,
+                    value=self.default_value,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_datepickerrange_html(
+            self,
+            minimum: Any = None,
+            maximum: Any = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.DatePickerRange(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    min_date_allowed=minimum,
+                    max_date_allowed=maximum,
+                    initial_visible_month=maximum,
+                    start_date=self.default_value[0] if self.default_value else None,
+                    end_date=self.default_value[1] if self.default_value else None,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_datepickersingle_html(
+            self,
+            minimum: Any = None,
+            maximum: Any = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.DatePickerSingle(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    min_date_allowed=minimum,
+                    max_date_allowed=maximum,
+                    initial_visible_month=maximum,
+                    date=self.default_value,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_dropdown_html(
+            self,
+            filter_options: List[Dict[str, str]] = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.Dropdown(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    options=filter_options,
+                    value=self.default_value,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_dropdown_multi_html(
+            self,
+            filter_options: List[Dict[str, str]] = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.Dropdown(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    multi=True,
+                    options=filter_options,
+                    value=self.default_value,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_radioitems_html(
+            self,
+            filter_options: List[Dict[str, str]] = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.RadioItems(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    options=filter_options,
+                    value=self.default_value,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_rangeslider_html(
+            self,
+            minimum: Any = None,
+            maximum: Any = None,
+            marks: dict = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.RangeSlider(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    min=minimum,
+                    max=maximum,
+                    value=self.default_value if self.default_value is not None else [minimum, maximum],
+                    marks=marks,
+                    step=None,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )
+
+    def _assemble_slider_html(
+            self,
+            minimum: Any = None,
+            maximum: Any = None,
+            marks: dict = None,
+            wrapper_class_name: str = None,
+            label_class_name: str = None,
+            filter_class_name: str = None,
+    ):
+        return html.Div(
+            className=wrapper_class_name,
+            children=[
+                html.Div(
+                    className=label_class_name,
+                    children=self.label_column,
+                ),
+                dcc.Slider(
+                    id=self.component_id,
+                    className=filter_class_name,
+                    min=minimum,
+                    max=maximum,
+                    value=self.default_value if self.default_value is not None else [minimum, maximum],
+                    marks=marks,
+                    step=None,
+                    persistence=self.persistence,
+                    persistence_type=self.persistence_type,
+                ),
+            ],
+        )

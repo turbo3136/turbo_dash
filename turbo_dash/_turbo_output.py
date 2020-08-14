@@ -132,7 +132,8 @@ class turbo_output(object):
 
             # 2
             df_filter_start_index = 0  # we can assume the dataframe filter values start at 0
-            df_filter_stop_index = len(menu_filter_list)  # and there are len(menu_filter_list) values to filter on
+            # and there are len([list of lambda functions]) values to filter on
+            df_filter_stop_index = len([func for tf in menu_filter_list for func in tf.filter_input_lambda_function_list])
             filtered_df = self._filter_dataframe_from_turbo_filter_list(
                 df=filtered_df,
                 filter_column_list=self._filter_column_list(menu_filter_list=menu_filter_list),
@@ -250,7 +251,7 @@ class turbo_output(object):
             df: pd.DataFrame,
             filter_column_list: List[str],
             filter_lambda_function_list: List[Callable[[pd.DataFrame, str, Any], pd.DataFrame]],
-            filter_value_list: Tuple[Any],  # it's just a damn list, not sure why this is throwing type errors
+            filter_value_list: Tuple[Any],
     ) -> pd.DataFrame:
         """filter a dataframe based on a list of values and turbo_filters
 
