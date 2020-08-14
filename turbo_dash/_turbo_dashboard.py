@@ -112,7 +112,7 @@ class turbo_dashboard(object):
             suppress_callback_exceptions: bool = True,
             debug: bool = False,
             is_in_production: bool = False,
-    ) -> bool:
+    ) -> dash.Dash:
         """create the app, manage the layouts, run the callbacks, start the server
 
         Args:
@@ -125,10 +125,13 @@ class turbo_dashboard(object):
                 have to do some special stuff with the server
 
         Returns:
-            bool: True if successful
+            dash.Dash
         """
         # create the app and initiate everything (layout, )
-        app = self._initiate_app(app_name=app_name, suppress_callback_exceptions=suppress_callback_exceptions)
+        app = self._initiate_app(
+            app_name=app_name,
+            suppress_callback_exceptions=suppress_callback_exceptions,
+        )
 
         # gather all the layouts into an OrderedDict of dicts
         urls_names_and_html = self._urls_names_and_html(
@@ -148,7 +151,7 @@ class turbo_dashboard(object):
             is_in_production=is_in_production,
         )
 
-        return True
+        return app
 
     def _initiate_app(
             self,
@@ -303,7 +306,10 @@ class turbo_dashboard(object):
             bool: True if successful, raises errors otherwise
         """
         if is_in_production is True:
-            raise NotImplementedError('Whoops, looks like turbo didn\'t productionize this yet!')
+            raise NotImplementedError(
+                '''If you\'re trying to run this on a production server, check out the "Deploying in Production" 
+                section here: https://github.com/turbo3136/turbo_dash/blob/master/README.md'''
+            )
         else:
             app.run_server(debug=debug)
 
