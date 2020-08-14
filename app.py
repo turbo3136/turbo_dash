@@ -21,17 +21,29 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
 
             # menu filters, i.e. dropdown, slider, etc
             menu_filter_list=[
-                turbo_dash.turbo_filter(filter_type='Dropdown', column='country'),
+                turbo_dash.turbo_filter(filter_type='Dropdown-multi', column='country'),
                 turbo_dash.turbo_filter(filter_type='RangeSlider', column='year'),
             ],
 
             # outputs, i.e. graphs, images, etc
             output_list=[
                 # bar graph of population vs year
-                turbo_dash.turbo_output(output_type='bar', x='year', y='pop'),
+                turbo_dash.turbo_output(
+                    output_type='bar',
+                    x='year',
+                    y='pop',
+                    color='continent',
+                    hover_name='country',
+                ),
 
                 # line graph of life expectancy vs year with an input to change the y axis to a different column
-                turbo_dash.turbo_output(output_type='line', x='year', y='lifeExp', chart_input_list=['output_type', 'y'],),
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='lifeExp',
+                    color='country',
+                    chart_input_list=['y'],
+                ),
             ],
         ),
 
@@ -52,7 +64,12 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
             # outputs, i.e. graphs, images, etc
             output_list=[
                 # line graph of gdpPercap vs year
-                turbo_dash.turbo_output(output_type='line', x='year', y='gdpPercap'),
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='gdpPercap',
+                    color='country',
+                ),
             ],
         ),
 

@@ -28,6 +28,7 @@ class turbo_output(object):
             z: str = None,
             color: str = None,
             size: str = None,
+            hover_name: str = None,
             hover_data: List[str] = (),
             locations: str = None,
             locationmode: str = None,
@@ -44,6 +45,7 @@ class turbo_output(object):
             z (:obj: `str`, optional): default `None`, string representing the z-axis of the output
             color (:obj: `str`, optional): default `None`, string representing the color of the output
             size (:obj: `str`, optional): default `None`, string representing the size of the output
+            hover_name (:obj: `str`, optional): default `None`, string representing the hover_name of the output
             hover_data (:obj: `str`, optional): default `()`, list representing the hover_data of the output
             locations (:obj: `str`, optional): default `None`, string representing the locations of the output
             locationmode (:obj: `str`, optional): default `None`, string representing the locationmode of the output
@@ -60,6 +62,7 @@ class turbo_output(object):
         self.z = z
         self.color = color
         self.size = size
+        self.hover_name = hover_name
         self.hover_data = hover_data
         self.locations = locations
         self.locationmode = locationmode
@@ -75,6 +78,7 @@ class turbo_output(object):
             'z': self.z,
             'color': self.color,
             'size': self.size,
+            'hover_name': self.hover_name,
             'hover_data': self.hover_data,
             'locations': self.locations,
             'locationmode': self.locationmode,
@@ -352,6 +356,7 @@ class turbo_output(object):
                 y=figure_values_dict['y'],
                 color=figure_values_dict['color'],
                 size=figure_values_dict['size'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -362,6 +367,7 @@ class turbo_output(object):
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -372,6 +378,7 @@ class turbo_output(object):
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -382,6 +389,7 @@ class turbo_output(object):
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -392,6 +400,7 @@ class turbo_output(object):
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 points='all',
                 template=self._template_lookup_dict[template]['chart_template'],
@@ -404,6 +413,7 @@ class turbo_output(object):
                 y=figure_values_dict['y'],
                 z=figure_values_dict['z'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -416,6 +426,7 @@ class turbo_output(object):
                 projection=figure_values_dict['projection'],
                 color=figure_values_dict['color'],
                 size=figure_values_dict['size'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
@@ -427,6 +438,7 @@ class turbo_output(object):
                 locationmode=figure_values_dict['location_mode'],
                 projection=figure_values_dict['projection'],
                 color=figure_values_dict['color'],
+                hover_name=figure_values_dict['hover_name'],
                 hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
