@@ -66,6 +66,71 @@ _template_lookup = {
         'content_output_className': 'content-output-dark',
 
     },
+
+    None: {
+        # chart template
+        'chart_template': None,
+
+        # header
+        'header_className': None,
+        'header_logo_className': None,
+        'header_links_className': None,
+        'header_link_className': None,
+        'header_link_current_className': None,
+
+        # menu and content
+        'menu_and_content_className': None,
+
+        # menu
+        'menu_className': None,
+        'menu_filter_wrapper_className': None,
+        'menu_filter_label_className': None,
+        'menu_filter_className': None,
+
+        # content
+        'content_className': None,
+        'content_output_and_filter_wrapper_className': None,
+        'content_filter_wrapper_className': None,
+        'content_filter_label_className': None,
+        'content_filter_className': None,
+        'content_output_wrapper_className': None,
+        'content_output_label_className': None,
+        'content_output_className': None,
+
+    },
+
+    'default': {
+        # chart template
+        'chart_template': None,
+
+        # header
+        'header_className': 'header',
+        'header_logo_className': 'logo',
+        'header_links_className': 'header-links',
+        'header_link_className': 'header-link',
+        'header_link_current_className': 'header-link-current',
+
+        # menu and content
+        'menu_and_content_className': 'menu-and-content',
+
+        # menu
+        'menu_className': 'menu',
+        'menu_filter_wrapper_className': 'menu-filter-wrapper',
+        'menu_filter_label_className': 'menu-filter-label',
+        'menu_filter_className': 'menu-filter',
+
+        # content
+        'content_className': 'content',
+        'content_output_and_filter_wrapper_className': 'content-output-and-filter-wrapper',
+        'content_filter_wrapper_className': 'content-filter-wrapper',
+        'content_filter_label_className': 'content-filter-label',
+        'content_filter_className': 'content-filter',
+        'content_output_wrapper_className': 'content-output-wrapper',
+        'content_output_label_className': 'content-output-label',
+        'content_output_className': 'content-output',
+
+    },
+
 }
 
 """filters"""

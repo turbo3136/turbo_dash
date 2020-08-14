@@ -38,6 +38,7 @@ class turbo_dashboard(object):
             'https://raw.githubusercontent.com/turbo3136/turbo_dash_assets/master/not_available.png',
             external_stylesheets_tuple: Tuple[str, ...] = (
                 'https://codepen.io/turbo3136/pen/BaKjLoL.css',  # stylesheet for 'turbo' template
+                'https://codepen.io/turbo3136/pen/jOqqqgj.css',  # stylesheet for 'turbo-dark' template
             ),
             app_tab_title: str = 'Turbo Dash',
     ):
