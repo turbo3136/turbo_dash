@@ -54,7 +54,7 @@ inexperienced python developer to quickly create a simple, clean, interactive, e
 
 ## Example app
 `./app.py`
-```
+```python
 import turbo_dash
 
 # grab our data
@@ -63,7 +63,7 @@ df = turbo_dash.data.gapminder()
 # Here's where all the magic happens. This creates our dashboard.
 turbo_dashboard = turbo_dash.turbo_dashboard(
     # template
-    template='turbo',
+    template='turbo-dark',
 
     # dashboard pages
     dashboard_page_list=[
@@ -76,31 +76,32 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
             # data
             df=df,  # setting our data at the page level allows us to use different datasets for each page
 
-            # menu, i.e. sidebar with filters
-            menu=turbo_dash.turbo_menu(
-                df=df,
-                filter_list=[
-                    turbo_dash.turbo_filter(type='Dropdown', column='country'),
-                    turbo_dash.turbo_filter(type='RangeSlider', column='year'),
-                ],
-            ),
+            # menu filters, i.e. dropdown, slider, etc
+            menu_filter_list=[
+                turbo_dash.turbo_filter(filter_type='Dropdown-multi', column='country'),
+                turbo_dash.turbo_filter(filter_type='RangeSlider', column='year'),
+            ],
 
-            # content, i.e. graphs, images, etc
-            content=turbo_dash.turbo_content(
-                df=df,
-                output_list=[
-                    # bar graph of population vs year
-                    turbo_dash.turbo_output(type='bar', x='year', y='pop'),
+            # outputs, i.e. graphs, images, etc
+            output_list=[
+                # bar graph of population vs year
+                turbo_dash.turbo_output(
+                    output_type='bar',
+                    x='year',
+                    y='pop',
+                    color='continent',
+                    hover_name='country',
+                ),
 
-                    # line graph of life expectancy vs year with an input to change the y axis to a different column
-                    turbo_dash.turbo_output(
-                        type='line',
-                        x='year',
-                        y='lifeExp',
-                        input_list=['y'],
-                    ),
-                ],
-            ),
+                # line graph of life expectancy vs year with an input to change the y axis to a different column
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='lifeExp',
+                    color='country',
+                    chart_input_list=['y'],
+                ),
+            ],
         ),
 
         # App 2
@@ -112,28 +113,69 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
             # data
             df=df,  # setting our data at the page level allows us to use different datasets for each page
 
-            # menu, i.e. sidebar with filters
-            menu=turbo_dash.turbo_menu(
-                df=df,
-                filter_list=[
-                    turbo_dash.turbo_filter(type='Checklist', column='continent'),
-                ],
-            ),
+            # menu filters, i.e. dropdown, slider, etc
+            menu_filter_list=[
+                turbo_dash.turbo_filter(filter_type='Checklist', column='continent'),
+            ],
 
-            # content, i.e. graphs, images, etc
-            content=turbo_dash.turbo_content(
-                df=df,
-                output_list=[
-                    # line graph of gdpPercap vs year
-                    turbo_dash.turbo_output(type='line', x='year', y='gdpPercap'),
-                ],
-            ),
+            # outputs, i.e. graphs, images, etc
+            output_list=[
+                # line graph of gdpPercap vs year
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='gdpPercap',
+                    color='country',
+                ),
+            ],
+        ),
+
+        # Playground
+        turbo_dash.turbo_dashboard_page(
+            # page information
+            url='/playground',
+            name='Playground',
+
+            # data
+            df=df,  # setting our data at the page level allows us to use different datasets for each page
+
+            # menu filters, i.e. dropdown, slider, etc
+            menu_filter_list=[
+                turbo_dash.turbo_filter(filter_type='Checklist', column='continent'),
+                turbo_dash.turbo_filter(filter_type='Dropdown-multi', column='country'),
+                turbo_dash.turbo_filter(filter_type='RangeSlider', column='year'),
+            ],
+
+            # outputs, i.e. graphs, images, etc
+            output_list=[
+                # line graph of gdpPercap vs year
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='gdpPercap',
+                    color='country',
+                    chart_input_list=[
+                        'output_type',
+                        'x',
+                        'y',
+                        'z',
+                        'color',
+                        'size',
+                        'hover_name',
+                        'hover_data',
+                        'locations',
+                        'locationmode',
+                        'projection',
+                    ],
+                ),
+            ],
         ),
 
     ],
 )
 
-# execute the code
+# Execute the code in a development environment. For deploying in production, see the "Deploying in Production" 
+#   section of the README here: https://github.com/turbo3136/turbo_dash/blob/master/README.md
 if __name__ == '__main__':
-    turbo_dashboard.run_dashboard()
+    server = turbo_dashboard.run_dashboard(app_name=__name__)
 ```
