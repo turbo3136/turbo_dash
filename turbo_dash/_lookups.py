@@ -138,7 +138,11 @@ _chart_input_to_filter_type_lookup = {
     'z': 'Dropdown',
     'color': 'Dropdown',
     'size': 'Dropdown',
+    'hover_name': 'Dropdown',
     'hover_data': 'Dropdown-multi',
+    'locations': 'Dropdown',
+    'locationmode': 'Dropdown',
+    'projection': 'Dropdown',
 }
 
 """plotly objects"""

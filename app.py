@@ -73,6 +73,47 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
             ],
         ),
 
+        # Playground
+        turbo_dash.turbo_dashboard_page(
+            # page information
+            url='/playground',
+            name='Playground',
+
+            # data
+            df=df,  # setting our data at the page level allows us to use different datasets for each page
+
+            # menu filters, i.e. dropdown, slider, etc
+            menu_filter_list=[
+                turbo_dash.turbo_filter(filter_type='Checklist', column='continent'),
+                turbo_dash.turbo_filter(filter_type='Dropdown-multi', column='country'),
+                turbo_dash.turbo_filter(filter_type='RangeSlider', column='year'),
+            ],
+
+            # outputs, i.e. graphs, images, etc
+            output_list=[
+                # line graph of gdpPercap vs year
+                turbo_dash.turbo_output(
+                    output_type='line',
+                    x='year',
+                    y='gdpPercap',
+                    color='country',
+                    chart_input_list=[
+                        'output_type',
+                        'x',
+                        'y',
+                        'z',
+                        'color',
+                        'size',
+                        'hover_name',
+                        'hover_data',
+                        'locations',
+                        'locationmode',
+                        'projection',
+                    ],
+                ),
+            ],
+        ),
+
     ],
 )
 

@@ -422,7 +422,7 @@ class turbo_output(object):
             return px.scatter_geo(
                 data_frame=df,
                 locations=figure_values_dict['locations'],
-                locationmode=figure_values_dict['location_mode'],
+                locationmode=figure_values_dict['locationmode'],
                 projection=figure_values_dict['projection'],
                 color=figure_values_dict['color'],
                 size=figure_values_dict['size'],
@@ -435,7 +435,7 @@ class turbo_output(object):
             return px.choropleth(
                 data_frame=df,
                 locations=figure_values_dict['locations'],
-                locationmode=figure_values_dict['location_mode'],
+                locationmode=figure_values_dict['locationmode'],
                 projection=figure_values_dict['projection'],
                 color=figure_values_dict['color'],
                 hover_name=figure_values_dict['hover_name'],

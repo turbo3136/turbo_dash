@@ -53,6 +53,7 @@ class turbo_filter(object):
         self.column = column
         self.label_column = label_column if label_column is not None else self.column
         self.default_value = default_value
+        self.label_string = self.label_column if self.chart_input_filter_type is None else self.chart_input_filter_type
 
         # grab some important data
         self.component_id = '{}-{} - {}'.format(self.filter_type, self.column, generate_random_string())
@@ -287,7 +288,7 @@ class turbo_filter(object):
         Returns:
             html.Div
         """
-        if self.chart_input_filter_type in ('x', 'y', 'z', 'color', 'size', 'locations'):
+        if self.chart_input_filter_type in ('x', 'y', 'z', 'color', 'size', 'hover_name', 'hover_data', 'locations'):
             # for these chart_input_filter_types we want a list of columns as the filter options
             filter_options = [{'label': col, 'value': col} for col in df.columns.values]
 
@@ -366,7 +367,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.Checklist(
                     id=self.component_id,
@@ -392,7 +393,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.DatePickerRange(
                     id=self.component_id,
@@ -421,7 +422,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.DatePickerSingle(
                     id=self.component_id,
@@ -448,7 +449,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.Dropdown(
                     id=self.component_id,
@@ -473,7 +474,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.Dropdown(
                     id=self.component_id,
@@ -499,7 +500,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.RadioItems(
                     id=self.component_id,
@@ -526,7 +527,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.RangeSlider(
                     id=self.component_id,
@@ -556,7 +557,7 @@ class turbo_filter(object):
             children=[
                 html.Div(
                     className=label_class_name,
-                    children=self.label_column,
+                    children=self.label_string,
                 ),
                 dcc.Slider(
                     id=self.component_id,
