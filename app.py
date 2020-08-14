@@ -6,7 +6,7 @@ df = turbo_dash.data.gapminder()
 # Here's where all the magic happens. This creates our dashboard.
 turbo_dashboard = turbo_dash.turbo_dashboard(
     # template
-    template='turbo',
+    template='turbo-dark',
 
     # dashboard pages
     dashboard_page_list=[
