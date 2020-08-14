@@ -138,6 +138,7 @@ _chart_input_to_filter_type_lookup = {
     'z': 'Dropdown',
     'color': 'Dropdown',
     'size': 'Dropdown',
+    'hover_data': 'Dropdown-multi',
 }
 
 """plotly objects"""
@@ -163,12 +164,6 @@ _chart_lookup_dict = OrderedDict([
     (
         'bar', {
             'object': px.bar,
-            'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
-        }
-    ),
-    (
-        'histogram', {
-            'object': px.histogram,
             'inputs': ['data_frame', 'x', 'y', 'color', 'hover_data', 'template'],
         }
     ),
@@ -216,6 +211,7 @@ _chart_lookup_dict = OrderedDict([
 ])
 
 # not supported yet
+# histogram
 # density_contour
 # density_heatmap
 # box

@@ -5,7 +5,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from ._helpers import generate_random_string
-from ._lookups import _filter_type_lookup, _chart_input_to_filter_type_lookup, _list_of_chart_strings
+from ._lookups import (
+    _filter_type_lookup, _chart_input_to_filter_type_lookup, _list_of_chart_strings, _arg_options_lookup_dict
+)
 
 
 class turbo_filter(object):
@@ -17,6 +19,9 @@ class turbo_filter(object):
 
     _filter_type_lookup_dict = _filter_type_lookup
     _chart_input_to_filter_type_lookup_dict = _chart_input_to_filter_type_lookup
+    _list_of_chart_strings_lookup = _list_of_chart_strings
+    _list_of_projection_options = _arg_options_lookup_dict['projection']
+    _list_of_locationmode_options = _arg_options_lookup_dict['locationmode']
 
     def __init__(
             self,
@@ -282,7 +287,7 @@ class turbo_filter(object):
         Returns:
             html.Div
         """
-        if self.chart_input_filter_type in ('x', 'y', 'z', 'color', 'size'):
+        if self.chart_input_filter_type in ('x', 'y', 'z', 'color', 'size', 'locations'):
             # for these chart_input_filter_types we want a list of columns as the filter options
             filter_options = [{'label': col, 'value': col} for col in df.columns.values]
 
@@ -304,7 +309,35 @@ class turbo_filter(object):
 
         if self.chart_input_filter_type == 'output_type':
             # for this chart_input_filter_type we want to grab a list of all supported chart options
-            filter_options = [{'label': chart_string, 'value': chart_string} for chart_string in _list_of_chart_strings]
+            filter_options = [
+                {'label': chart_string, 'value': chart_string} for chart_string in self._list_of_chart_strings_lookup
+            ]
+
+            return self._assemble_dropdown_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.chart_input_filter_type == 'locationmode':
+            # for this chart_input_filter_type we want to grab a list of all supported chart options
+            filter_options = [
+                {'label': chart_string, 'value': chart_string} for chart_string in self._list_of_locationmode_options
+            ]
+
+            return self._assemble_dropdown_html(
+                filter_options=filter_options,
+                wrapper_class_name=wrapper_class_name,
+                label_class_name=label_class_name,
+                filter_class_name=filter_class_name,
+            )
+
+        if self.chart_input_filter_type == 'projection':
+            # for this chart_input_filter_type we want to grab a list of all supported chart options
+            filter_options = [
+                {'label': chart_string, 'value': chart_string} for chart_string in self._list_of_projection_options
+            ]
 
             return self._assemble_dropdown_html(
                 filter_options=filter_options,

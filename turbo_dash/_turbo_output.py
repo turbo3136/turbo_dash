@@ -26,6 +26,12 @@ class turbo_output(object):
             x: str = None,
             y: str = None,
             z: str = None,
+            color: str = None,
+            size: str = None,
+            hover_data: List[str] = (),
+            locations: str = None,
+            locationmode: str = None,
+            projection: str = None,
             chart_input_list: List[str] = (),
             output_component_property: str = 'figure',
     ):
@@ -36,6 +42,12 @@ class turbo_output(object):
             x (:obj: `str`, optional): default `None`, string representing the x-axis of the output
             y (:obj: `str`, optional): default `None`, string representing the y-axis of the output
             z (:obj: `str`, optional): default `None`, string representing the z-axis of the output
+            color (:obj: `str`, optional): default `None`, string representing the color of the output
+            size (:obj: `str`, optional): default `None`, string representing the size of the output
+            hover_data (:obj: `str`, optional): default `()`, list representing the hover_data of the output
+            locations (:obj: `str`, optional): default `None`, string representing the locations of the output
+            locationmode (:obj: `str`, optional): default `None`, string representing the locationmode of the output
+            projection (:obj: `str`, optional): default `None`, string representing the projection of the output
             chart_input_list (:obj: `List[str]`, optional): default `()`, list of inputs we want to include
                 that will update this output
             output_component_property (:obj: `str`, optional): default `'figure'`, the property of the
@@ -46,6 +58,12 @@ class turbo_output(object):
         self.x = x
         self.y = y
         self.z = z
+        self.color = color
+        self.size = size
+        self.hover_data = hover_data
+        self.locations = locations
+        self.locationmode = locationmode
+        self.projection = projection
         self.chart_input_list = chart_input_list
         self.output_component_property = output_component_property
 
@@ -55,6 +73,12 @@ class turbo_output(object):
             'x': self.x,
             'y': self.y,
             'z': self.z,
+            'color': self.color,
+            'size': self.size,
+            'hover_data': self.hover_data,
+            'locations': self.locations,
+            'locationmode': self.locationmode,
+            'projection': self.projection,
         }
 
         # create actual turbo_filter objects from the list of input strings
@@ -321,11 +345,14 @@ class turbo_output(object):
             figure_values_dict[self.chart_input_list[index]] = chart_input_value
 
         # 2
-        if figure_values_dict['output_type'] == 'bar':
-            return px.bar(
+        if figure_values_dict['output_type'] == 'scatter':
+            return px.scatter(
                 data_frame=df,
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
+                color=figure_values_dict['color'],
+                size=figure_values_dict['size'],
+                hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
 
@@ -334,6 +361,73 @@ class turbo_output(object):
                 data_frame=df,
                 x=figure_values_dict['x'],
                 y=figure_values_dict['y'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'area':
+            return px.area(
+                data_frame=df,
+                x=figure_values_dict['x'],
+                y=figure_values_dict['y'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'bar':
+            return px.bar(
+                data_frame=df,
+                x=figure_values_dict['x'],
+                y=figure_values_dict['y'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'violin':
+            return px.violin(
+                data_frame=df,
+                x=figure_values_dict['x'],
+                y=figure_values_dict['y'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
+                points='all',
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'scatter_3d':
+            return px.scatter_3d(
+                data_frame=df,
+                x=figure_values_dict['x'],
+                y=figure_values_dict['y'],
+                z=figure_values_dict['z'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'scatter_geo':
+            return px.scatter_geo(
+                data_frame=df,
+                locations=figure_values_dict['locations'],
+                locationmode=figure_values_dict['location_mode'],
+                projection=figure_values_dict['projection'],
+                color=figure_values_dict['color'],
+                size=figure_values_dict['size'],
+                hover_data=figure_values_dict['hover_data'],
+                template=self._template_lookup_dict[template]['chart_template'],
+            )
+
+        if figure_values_dict['output_type'] == 'choropleth':
+            return px.choropleth(
+                data_frame=df,
+                locations=figure_values_dict['locations'],
+                locationmode=figure_values_dict['location_mode'],
+                projection=figure_values_dict['projection'],
+                color=figure_values_dict['color'],
+                hover_data=figure_values_dict['hover_data'],
                 template=self._template_lookup_dict[template]['chart_template'],
             )
 
@@ -343,3 +437,4 @@ class turbo_output(object):
                 """I don't know what to do with a "{}" output_type. Please add it to {}."""
                 .format(figure_values_dict['output_type'], __file__)
             )
+
