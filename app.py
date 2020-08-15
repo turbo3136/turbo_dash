@@ -121,4 +121,5 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
 # Execute the code in a development environment. For deploying in production, see the "Deploying in Production"
 #   section of the README here: https://github.com/turbo3136/turbo_dash/blob/master/README.md
 if __name__ == '__main__':
-    server = turbo_dashboard.run_dashboard(app_name=__name__)
+    # with this dash_object (`dash.Dash`) you can access all it's properties if necessary, like the server
+    dash_object = turbo_dashboard.run_dashboard(app_name=__name__)
