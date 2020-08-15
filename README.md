@@ -179,3 +179,10 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
 if __name__ == '__main__':
     server = turbo_dashboard.run_dashboard(app_name=__name__)
 ```
+
+## Screenshots
+app1:
+![app1](./screenshots/app1.png)
+
+playground:
+![app1](./screenshots/playground.png)
