@@ -309,10 +309,10 @@ class turbo_dashboard(object):
             bool: True if successful, raises errors otherwise
         """
         if is_in_production is True:
-            raise NotImplementedError(
-                '''If you\'re trying to run this on a production server, check out the "Deploying in Production" 
-                section here: https://github.com/turbo3136/turbo_dash/blob/master/README.md'''
-            )
+            """If you\'re trying to run this on a production server, check out the "Deploying in Production" 
+            section here: https://github.com/turbo3136/turbo_dash/blob/master/README.md"""
+            pass
+
         else:
             app.run_server(debug=debug)
 
