@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="turbo_dash",
-    version="0.4.0",
+    version="0.5.0",
     author="turbo3136",
     author_email="turbo3136@gmail.com",
     description="automated Dash framework with templates",
@@ -13,6 +13,12 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/turbo3136/turbo_dash",
     packages=setuptools.find_packages(),
+    package_data={
+        "turbo_dash": [
+            "package_data/*",
+            "package_data/datasets/*"
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
