@@ -186,3 +186,9 @@ app1:
 
 playground:
 ![app1](./screenshots/playground.png)
+
+## Deploying in Production
+[reference](https://dash.plotly.com/deployment)
+
+#### What I did (probably unstable and stupid):
+1. 
