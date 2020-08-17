@@ -197,6 +197,11 @@ playground:
     1. Gunicorn to create the WSGI HTTP server (sure, I know some of these words)
 1. Create the files and structure you see in the `services` directory
     1. Notice that the `project/__init__.py` file contains your dashboard code
+        1. Also notice that you can still use the Dash functionality that automatically
+        imports CSS from the `assets` directory
+        1. You can also use the `static` directory to save any content you want to display
+        like the homepage image, logo, or 404 page. Just add an argument for those files
+        when you create the `turbo_dash.turbo_dashboard()` instance
     1. Everything else is docker and flask stuff in service of making that code run
 1. You'll also need the `docker-compose.yml` and `docker-compose.prod.yml` files that create your docker image
 1. And you'll need the `.env.dev` and `.env.prod` files that the docker compose files pull from
