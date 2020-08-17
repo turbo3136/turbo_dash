@@ -1,60 +1,3 @@
-# turbo_dash
-automated Dash framework with templates
-
-## Quickstart
-`pip install turbo-dash`
-
-## Goal
-The goal of the `turbo_dash` project is to create a wrapper for [plotly dash](https://plotly.com/dash/) that allows an 
-inexperienced python developer to quickly create a simple, clean, interactive, easy to manipulate dashboard.
-
-## OKRs
-<table>
-    <tbody>
-        <tr>
-            <th>Objectives</th>
-            <th>Key Results</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td rowspan="3">
-                1. `turbo_dash` requires minimal python, plotly, or dash knowledge to create a fully functional 
-                dashboard, as measured by:
-            </td>
-            <td>i. less than 10 lines of code required per object</td>
-            <td>grey</td>
-        </tr>
-        <tr>
-            <td>ii. full documentation with examples for every developer-facing object</td>
-            <td>grey</td>
-        </tr>
-        <tr>
-            <td>iii. a suite of user-friendly templates that design the layout for the developer</td>
-            <td>grey</td>
-        </tr>
-        <tr>
-            <td>
-                2. `turbo_dash` executes commands quickly and displays minimal lag between 
-                input and output, as measured by:
-            </td>
-            <td>i. less than 1s load times for datasets up to 1M rows on a standard laptop CPU</td>
-            <td>grey</td>
-        </tr>
-        <tr>
-            <td rowspan="2">3. `turbo_dash` doesn't break, as measured by:</td>
-            <td>i. comprehensive test suite</td>
-            <td>grey</td>
-        </tr>
-        <tr>
-            <td>ii. full type-hinting with no errors shown by `mypy`</td>
-            <td>grey</td>
-        </tr>
-    </tbody>
-</table>
-
-## Example app
-`./app.py`
-```python
 import turbo_dash
 
 # grab our data
@@ -64,6 +7,10 @@ df = turbo_dash.data.gapminder()
 turbo_dashboard = turbo_dash.turbo_dashboard(
     # template
     template='turbo-dark',
+    external_stylesheets_tuple=(),
+    logo_img_url='/static/turbo_logo.png',
+    homepage_img_url='/static/launch_risk.png',
+    fourohfour_img_url='/static/not_available.png',
 
     # dashboard pages
     dashboard_page_list=[
@@ -91,6 +38,7 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
                     y='pop',
                     color='continent',
                     hover_name='country',
+                    output_name='Population over time',
                 ),
 
                 # line graph of life expectancy vs year with an input to change the y axis to a different column
@@ -174,31 +122,9 @@ turbo_dashboard = turbo_dash.turbo_dashboard(
     ],
 )
 
-# Execute the code in a development environment. For deploying in production, see the "Deploying in Production" 
-#   section of the README here: https://github.com/turbo3136/turbo_dash/blob/master/README.md
-if __name__ == '__main__':
-    server = turbo_dashboard.run_dashboard(app_name=__name__)
-```
 
-## Screenshots
-app1:
-![app1](./screenshots/app1.png)
-
-playground:
-![app1](./screenshots/playground.png)
-
-## Deploying in Production
-[Official Dash reference](https://dash.plotly.com/deployment)
-
-#### What I did (probably unstable and stupid):
-[Combining Flask, Gunicorn, and Docker reference](https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/)
-1. Follow that guide above, kind of. Our strategy is going to be using 
-    1. Docker to create a container that keeps our code nice and tidy
-    1. Gunicorn to create the WSGI HTTP server (sure, I know some of these words)
-1. Create the files and structure you see in the `services` directory
-    1. Notice that the `project/__init__.py` file contains your dashboard code
-    1. Everything else is docker and flask stuff in service of making that code run
-1. You'll also need the `docker-compose.yml` and `docker-compose.prod.yml` files that create your docker image
-1. And you'll need the `.env.dev` and `.env.prod` files that the docker compose files pull from
-1. Good luck! If you're reading this doc, there's at least an 80% chance you know more
-than I do, so there's no point in asking me why I did X.
+# with this dash_object (`dash.Dash`) you can access all it's properties if necessary, like the server
+def run_app():
+    dash_object = turbo_dashboard.run_dashboard(app_name=__name__, is_in_production=True)
+    app = dash_object.server
+    return app
